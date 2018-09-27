@@ -11,19 +11,8 @@ import (
 	"gonum.org/v1/gonum/mat"
 )
 
-type Point struct {
-	x float64
-	y float64
-	z float64
-}
-
-type Node struct {
-	coords  Point
-	node_nr int
-}
-
 type Meshfree struct {
-	domainSize         float64
+	domain             *domain.Domain
 	nodalSpacing       []float64
 	gamma              []float64
 	isConstantSpacing  bool
@@ -32,30 +21,36 @@ type Meshfree struct {
 	dim                int
 }
 
-func get_distance(a *Point, b *Point) float64 {
-	distance := math.Sqrt(math.Pow(a.x-b.x, 2) + math.Pow(a.y-b.y, 2) + math.Pow(a.z-b.z, 2))
-	return distance
-}
-
-func (meshfree *domain.Meshfree) get_shifted_coordinates(p *Point, m *mat.Dense) int {
+func (meshfree *Meshfree) get_shifted_coordinates(p *domain.Point, m *mat.Dense) int {
 	num_r, num_c := m.Dims()
+
+	// nodal coordinates
+	var nx, ny, nz float64
+	var px, py, pz float64
 	if num_c == 1 {
 		for i := 0; i < num_r; i++ {
-			m.Set(i, 0, -p.x+meshfree.Nodes[i].coords.x)
+			nx, _, _ = meshfree.domain.GetNodalCoordinates(i)
+			px, _, _ = p.GetPointCoordinates()
+			m.Set(i, 0, nx-px)
 		}
 	}
 	if num_c == 2 {
 		for i := 0; i < num_r; i++ {
-			m.Set(i, 0, -p.x+meshfree.Nodes[i].coords.x)
-			m.Set(i, 1, -p.y+meshfree.Nodes[i].coords.y)
+			nx, ny, _ = meshfree.domain.GetNodalCoordinates(i)
+			px, py, _ = p.GetPointCoordinates()
+			m.Set(i, 0, nx-px)
+			m.Set(i, 1, ny-py)
 		}
 	}
 
 	if num_c == 3 {
 		for i := 0; i < num_r; i++ {
-			m.Set(i, 0, -p.x+meshfree.Nodes[i].coords.x)
-			m.Set(i, 1, -p.y+meshfree.Nodes[i].coords.y)
-			m.Set(i, 2, -p.z+meshfree.Nodes[i].coords.z)
+			nx, ny, nz = meshfree.domain.GetNodalCoordinates(i)
+			px, py, pz = p.GetPointCoordinates()
+			m.Set(i, 0, nx-px)
+			m.Set(i, 1, ny-py)
+			m.Set(i, 2, nz-pz)
+
 		}
 	}
 
@@ -63,12 +58,14 @@ func (meshfree *domain.Meshfree) get_shifted_coordinates(p *Point, m *mat.Dense)
 }
 
 // compute meshfree shape functions
-func (meshfree *domain.Meshfree) compute_meshfree(p *Point, dim int, compute int, tol float64) int {
+func (meshfree *Meshfree) compute_meshfree(p *domain.Point, dim int, compute int, tol float64) int {
 
 	fmt.Printf("----------------------------------------------------------------------------\n")
 	fmt.Printf("Constructing meshfree shape functions at p = %v\n\n", p)
-	// compute shifted coordindates
-	shifted_coordinates := mat.NewDense(meshfree.num_nodes, dim, nil)
+	// get number of nodes
+	num_nodes := meshfree.domain.GetNumNodes()
+	// get shifted coordinates
+	shifted_coordinates := mat.NewDense(num_nodes, dim, nil)
 	meshfree.get_shifted_coordinates(p, shifted_coordinates)
 
 	// get neighbours of point p
@@ -372,7 +369,7 @@ func f_of_lamdba(dim int, weight *mat.VecDense, xs *mat.Dense, tol float64, max_
 
 }
 
-func (meshfree *domain.Meshfree) set_basis_function_radii() {
+func (meshfree *Meshfree) set_basis_function_radii() {
 
 	for i := 0; i < meshfree.num_nodes; i++ {
 		if meshfree.isConstantSpacing == true {
@@ -386,7 +383,7 @@ func (meshfree *domain.Meshfree) set_basis_function_radii() {
 }
 
 // get neighbours of the point p, which was used to construct the shifted_coordinates
-func (meshfree *domain.Meshfree) get_neighbours(m *mat.Dense) []int {
+func (meshfree *Meshfree) get_neighbours(m *mat.Dense) []int {
 	num_r, _ := m.Dims()
 	neighbours := make([]int, 0)
 	for i := 0; i < num_r; i++ {
@@ -407,7 +404,7 @@ func (meshfree *domain.Meshfree) get_neighbours(m *mat.Dense) []int {
 }
 
 // Construct the prior, or 'weight functions'
-func prior(weight_type string, neighbours []int, xS_c *mat.Dense, meshfree *domain.Meshfree) (*mat.VecDense, *mat.Dense) {
+func prior(weight_type string, neighbours []int, xS_c *mat.Dense, meshfree *Meshfree) (*mat.VecDense, *mat.Dense) {
 
 	num_points, dim := xS_c.Dims()
 	rNorm := make([]float64, len(neighbours))
@@ -456,7 +453,7 @@ func cubic_spline(dmI []float64, xS *mat.Dense, rNorm []float64) (*mat.VecDense,
 	return weights, derWeights
 
 }
-func (meshfree *domain.Meshfree) get_nodal_spacing() {
+func (meshfree *Meshfree) get_nodal_spacing() {
 	distanceMin := make([]float64, meshfree.num_nodes)
 	for i, nodeI := range meshfree.Nodes {
 		for j, nodeJ := range meshfree.Nodes {
