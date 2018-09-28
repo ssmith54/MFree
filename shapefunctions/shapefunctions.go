@@ -1,7 +1,32 @@
+/***********************************************************************/
+// This program computes the Maximum Entropy and MLS shape shape functions
+// in 1D, 2D and 3D
+
+// Created by : Stephen P. Smith
+// Web        : N/A
+// E-mail     : ssmith54@qub.ac.uk
+// Version    : 1.0
+// Date       : 25/09/2018
+
+//
+//				Department of Mechanical and Aerospace Engineering
+//									Queen's Unversity Belfast
+//
+
+// Based on the implementation by Alejandro A. Ortiz (www.cec.uchile.cl/~aortizb)
+
+// __________
+// References
+// __________
+
+// Sukumar N. Construction of polygonal interpolants: a maximum entropy
+// approach. Int. J. Numer. Meth. Engng 2004; 61(12):2159-2181.
+
 package shapefunctions
 
 import (
 	"Meshfree/domain"
+	"Meshfree/geometry"
 	"errors"
 	"fmt"
 	"math"
@@ -21,7 +46,15 @@ type Meshfree struct {
 	dim                int
 }
 
-func (meshfree *Meshfree) get_shifted_coordinates(p *domain.Point, m *mat.Dense) int {
+func NewMeshfree(domainIn *domain.Domain, isConstantSpacingIn bool, isVariousPointsIn bool, dimIn int, gammaIn []float64) *Meshfree {
+
+	m := Meshfree{domain: domainIn, isConstantSpacing: isConstantSpacingIn, isVariousPoints: isVariousPointsIn, dim: dimIn, gamma: gammaIn}
+	m.get_nodal_spacing()
+	m.set_basis_function_radii()
+	return &m
+}
+
+func (meshfree *Meshfree) get_shifted_coordinates(p *geometry.Point, m *mat.Dense) {
 	num_r, num_c := m.Dims()
 
 	// nodal coordinates
@@ -53,12 +86,20 @@ func (meshfree *Meshfree) get_shifted_coordinates(p *domain.Point, m *mat.Dense)
 
 		}
 	}
+}
 
-	return 2
+func (meshfree *Meshfree) SetConstantGamma(gamma float64) {
+	num_nodes := meshfree.domain.GetNumNodes()
+	if len(meshfree.gamma) < num_nodes {
+		meshfree.gamma = make([]float64, num_nodes)
+	}
+	for i := 0; i < meshfree.domain.GetNumNodes(); i++ {
+		meshfree.gamma[i] = gamma
+	}
 }
 
 // compute meshfree shape functions
-func (meshfree *Meshfree) compute_meshfree(p *domain.Point, dim int, compute int, tol float64) int {
+func (meshfree *Meshfree) ComputeMeshfree(p *geometry.Point, dim int, compute int, tol float64) int {
 
 	fmt.Printf("----------------------------------------------------------------------------\n")
 	fmt.Printf("Constructing meshfree shape functions at p = %v\n\n", p)
@@ -66,6 +107,7 @@ func (meshfree *Meshfree) compute_meshfree(p *domain.Point, dim int, compute int
 	num_nodes := meshfree.domain.GetNumNodes()
 	// get shifted coordinates
 	shifted_coordinates := mat.NewDense(num_nodes, dim, nil)
+
 	meshfree.get_shifted_coordinates(p, shifted_coordinates)
 
 	// get neighbours of point p
@@ -371,7 +413,16 @@ func f_of_lamdba(dim int, weight *mat.VecDense, xs *mat.Dense, tol float64, max_
 
 func (meshfree *Meshfree) set_basis_function_radii() {
 
-	for i := 0; i < meshfree.num_nodes; i++ {
+	num_nodes := meshfree.domain.GetNumNodes()
+
+	if len(meshfree.basisFunctionRadii) < num_nodes {
+		meshfree.basisFunctionRadii = make([]float64, num_nodes)
+	}
+	fmt.Printf("\n\n\n\nnum_nodes %v\n", num_nodes)
+
+	fmt.Printf("\n\n\n\nnum_nodes %v\n", meshfree.gamma)
+
+	for i := 0; i < num_nodes; i++ {
 		if meshfree.isConstantSpacing == true {
 			_, max := MinMax(meshfree.nodalSpacing)
 			meshfree.basisFunctionRadii[i] = max * meshfree.gamma[i]
@@ -454,11 +505,12 @@ func cubic_spline(dmI []float64, xS *mat.Dense, rNorm []float64) (*mat.VecDense,
 
 }
 func (meshfree *Meshfree) get_nodal_spacing() {
-	distanceMin := make([]float64, meshfree.num_nodes)
-	for i, nodeI := range meshfree.Nodes {
-		for j, nodeJ := range meshfree.Nodes {
+	num_nodes := meshfree.domain.GetNumNodes()
+	distanceMin := make([]float64, num_nodes)
+	for i, nodeI := range meshfree.domain.Nodes {
+		for j, nodeJ := range meshfree.domain.Nodes {
 			if i != j {
-				distanceMin[j] = get_distance(&nodeI.coords, &nodeJ.coords)
+				distanceMin[j] = domain.GetNodalDistance(&nodeI, &nodeJ)
 			} else {
 				distanceMin[j] = 100
 			}

@@ -1,6 +1,5 @@
 /***********************************************************************/
-// This program computes the Maximum Entropy and MLS shape shape functions
-// in 1D, 2D and 3D
+// Example test file for the Mfree go library
 
 // Created by : Stephen P. Smith
 // Web        : N/A
@@ -8,23 +7,13 @@
 // Version    : 1.0
 // Date       : 25/09/2018
 
-//
-//				Department of Mechanical and Aerospace Engineering
-//									Queen's Unversity Belfast
-//
-
-// Based on the implementation by Alejandro A. Ortiz (www.cec.uchile.cl/~aortizb)
-
-// __________
-// References
-// __________
-
-// Sukumar N. Construction of polygonal interpolants: a maximum entropy
-// approach. Int. J. Numer. Meth. Engng 2004; 61(12):2159-2181.
-
 package main
 
-import "Meshfree/domain"
+import (
+	"Meshfree/domain"
+	"Meshfree/geometry"
+	"Meshfree/shapefunctions"
+)
 
 func main() {
 
@@ -43,36 +32,21 @@ func main() {
 	// add nodes to meshfree domain
 	nodes = append(nodes, *n1, *n2, *n3, *n4, *n5, *n6, *n7, *n8, *n9)
 	numnodes := int(9)
-	// set up Domain of nodes
+	// Add nodes and set number of nodes in domain
 	domain := domain.NewDomain(nodes, numnodes)
 
 	// Meshfree structure
-	meshfree.Add_nodes(n1, n2, n3, n4, n5, n6, n7, n8, n9)
+	isConstantSpacing := true
+	isVariousPoints := false
+	gamma := []float64{1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2}
+	dim := 2
+	meshfree := shapefunctions.NewMeshfree(&domain, isConstantSpacing, isVariousPoints, dim, gamma)
 
-	// set number of nodes
-	meshfree.num_nodes = 9
+	p1 := geometry.NewPoint(0.25, 0.25, 0)
+	tol := 1e-8
+	compute := 2
 
-	// Meshfree stuff
-
-	// // constant domain domainSize
-	// meshfree.isConstantSpacing = true
-	// // Find shape function at various points?
-	// meshfree.isVariousPoints = false
-	// // nodal support size paramter gamma
-	// meshfree.gamma = []float64{1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2}
-	// meshfree.dim = 2
-	// // get nodal spacing
-	// meshfree.get_nodal_spacing()
-	// // set basis function radii
-	// meshfree.basisFunctionRadii = make([]float64, meshfree.num_nodes)
-	// meshfree.set_basis_function_radii()
-	// // find meshfree shape functions at point p1
-	// p1 := Point{0.25, 0.25, 0}
-	// tol := 1e-8
-	// dim := 2
-	// compute := 2
-	//
-	// // should return phi, phiDer, and the neighbours
-	// meshfree.compute_meshfree(&p1, dim, compute, tol)
+	// compute shape functions at p
+	meshfree.ComputeMeshfree(&p1, dim, compute, tol)
 
 }
