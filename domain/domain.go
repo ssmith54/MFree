@@ -79,6 +79,11 @@ func (domain *Domain) TriGen(fileName []string, options []string) {
 	fileNameIn := C.CString("preform")
 	optionsIn := C.CString("pDa1q0")
 	C.trigen(&points, &boundary, optionsIn, fileNameIn, &num_points)
+	nodes := make([]Node, num_points)
+
+	for i := 0; i < int(num_points); i++ {
+		nodes[i] = *NewNode(float64(*(po), float64(points[2*i+1]), 0, i)
+	}
 
 	// Need to free the C memory
 }
