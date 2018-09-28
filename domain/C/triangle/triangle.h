@@ -249,6 +249,7 @@
 /*****************************************************************************/
 #ifndef TRIANGLE_H_
 #define TRIANGLE_H_
+#define REAL double
 struct triangulateio {
   REAL *pointlist;                                               /* In / out */
   REAL *pointattributelist;                                      /* In / out */

@@ -1,8 +1,8 @@
 package domain
 
-// #cgo CFLAGS: -Wall -I./C
+// #cgo CFLAGS: -Wall -I./C -I./C/triangle
 // #cgo LDFLAGS: -L./C/triangle -ltriangle -lm
-//#include "../voronoi/C/trigen.h"
+//#include "C/trigen.h"
 //
 import "C"
 import (
@@ -63,7 +63,7 @@ func (domain *Domain) copyDomain() *Domain {
 }
 
 // update the domain based on the displacement
-func (domain *Domain) UpDateDomain() {
+func (domain *Domain) UpdateDomain() {
 
 }
 
@@ -79,6 +79,8 @@ func (domain *Domain) TriGen(fileName []string, options []string) {
 	fileNameIn := C.CString("preform")
 	optionsIn := C.CString("pDa1q0")
 	C.trigen(&points, &boundary, optionsIn, fileNameIn, &num_points)
+
+	// Need to free the C memory
 }
 
 // for 3D geometry

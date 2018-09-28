@@ -3,8 +3,6 @@
  and returns the triangulion, subject to the options given in char[] options
 */
 
-
-
 #include <trigen.h>
 #include <connect_segments.h>
 
@@ -144,8 +142,8 @@ int trigen(double ** output_points, int ** boundary, char * options, char * file
 	in->pointlist = malloc(in->numberofpoints*2*sizeof(double));
 	printf("got here (c) \n");
 	for ( int i = 0 ; i < in->numberofpoints ;i++){
-		fgets(buf,sizeof(buf),fp);
-		token = strtok(buf,s);
+		if (fgets(buf,sizeof(buf),fp) != NULL)
+			token = strtok(buf,s);
 		in->pointlist[2*i] = atof(token);
 		token = strtok(NULL,s);
 		in->pointlist[2*i+1] = atof(token);
@@ -158,13 +156,13 @@ int trigen(double ** output_points, int ** boundary, char * options, char * file
 	}
 	fclose(fp);
 	fp = fopen(segsFile,"r");
-	fgets(buf,sizeof(buf),fp);
-	in->numberofsegments = atoi(buf);
+	if (fgets(buf,sizeof(buf),fp) != NULL)
+		in->numberofsegments = atoi(buf);
 	in->segmentlist = malloc(2*in->numberofsegments*sizeof(int));
 	in->segmentmarkerlist = malloc(in->numberofsegments*sizeof(int));
 	for ( int i = 0 ; i < in->numberofsegments ;i++){
-		fgets(buf,sizeof(buf),fp);
-		token = strtok(buf,s);
+		if (fgets(buf,sizeof(buf),fp) != NULL)
+			token = strtok(buf,s);
 		in->segmentlist[2*i] = atoi(token);
 		token = strtok(NULL,s);
 		in->segmentlist[2*i+1] = atoi(token);

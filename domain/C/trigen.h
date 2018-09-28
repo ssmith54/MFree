@@ -16,10 +16,9 @@
 #include "triangle.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include "gpc.h"
-
 #include <string.h>
 
+#define REAL double
 
 typedef struct triangulateio * tri ;
 
