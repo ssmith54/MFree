@@ -104,6 +104,7 @@ int trigen(double ** output_points, int ** boundary, char * options, char * file
 	char nodesFile[20] ;
 	char segsFile[20] ;
 
+
 	strcpy(nodesFile,fileName);
 	strcpy(segsFile,fileName);
 	strcat(nodesFile,".nodes");
@@ -216,7 +217,6 @@ int trigen(double ** output_points, int ** boundary, char * options, char * file
 
 
 	// fill the jcv pointer
-	jcv_point * points = malloc(out->numberofpoints * sizeof(jcv_point));
 
 	for (int i = 0; i < out->numberofsegments; ++i)
 	{

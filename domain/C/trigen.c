@@ -214,10 +214,6 @@ int trigen(double ** output_points, int ** boundary, char * options, char * file
 	printf("passed triangulate \n");
 	report(out, 1, 0, 0, 0, 0, 0);
 
-
-	// fill the jcv pointer
-	jcv_point * points = malloc(out->numberofpoints * sizeof(jcv_point));
-
 	for (int i = 0; i < out->numberofsegments; ++i)
 	{
 		printf("Segment: %d %d\n", out->segmentlist[2*i], out->segmentlist[2*i+1] );

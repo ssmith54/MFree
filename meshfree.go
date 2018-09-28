@@ -40,6 +40,8 @@ func main() {
 	// Add nodes and set number of nodes in domain
 	domain := domain.NewDomain(nodes, numnodes)
 
+	domain.TriGen(nil, nil)
+
 	// Meshfree structure
 	isConstantSpacing := true
 	isVariousPoints := false

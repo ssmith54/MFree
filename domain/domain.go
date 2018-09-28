@@ -1,7 +1,13 @@
 package domain
 
+// #cgo CFLAGS: -Wall -I./C
+// #cgo LDFLAGS: -L./C/triangle -ltriangle -lm
+//#include "../voronoi/C/trigen.h"
+//
+import "C"
 import (
 	"Meshfree/geometry"
+	"Meshfree/voronoi"
 )
 
 type Node struct {
@@ -12,11 +18,13 @@ type Node struct {
 type Domain struct {
 	Nodes     []Node
 	num_nodes int
+	voronoi   *voronoi.Voronoi
+	dim       int
 }
 
 // Create a new domain
 func NewDomain(nodes []Node, numnodes int) Domain {
-	return Domain{nodes, numnodes}
+	return Domain{nodes, numnodes, nil, 0}
 }
 
 // Create a new node in the domain
@@ -51,7 +59,7 @@ func GetNodalDistance(a, b *Node) float64 {
 
 // Copy a domain
 func (domain *Domain) copyDomain() *Domain {
-	return &Domain{domain.Nodes, domain.num_nodes}
+	return &Domain{domain.Nodes, domain.num_nodes, nil, 0}
 }
 
 // update the domain based on the displacement
@@ -63,5 +71,22 @@ func (domain *Domain) UpDateDomain() {
 
 // generate a nodes using triangle ( A two dimensional meshfree generator )
 func (domain *Domain) TriGen(fileName []string, options []string) {
+
+	// define the C outputs and inputs
+	var points *C.double
+	var boundary *C.int
+	var num_points C.int
+	fileNameIn := C.CString("preform")
+	optionsIn := C.CString("pDa1q0")
+	C.trigen(&points, &boundary, optionsIn, fileNameIn, &num_points)
+}
+
+// for 3D geometry
+func (domain *Domain) TetGen(fileName []string) {
+
+}
+
+// generate the voronoi diagram
+func (domain *Domain) GenerateVoronoi() {
 
 }
