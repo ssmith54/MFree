@@ -18,6 +18,9 @@ import (
 func main() {
 
 	// Generate the domain
+	//var vor voronoi.Voronoi
+
+	// read in nodes then generate a voronoi diagram
 
 	// Construct meshfree shape functions
 	nodes := make([]domain.Node, 0)

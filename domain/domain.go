@@ -48,3 +48,20 @@ func (domain *Domain) GetNumNodes() int {
 func GetNodalDistance(a, b *Node) float64 {
 	return geometry.GetDistance(&a.coords, &b.coords)
 }
+
+// Copy a domain
+func (domain *Domain) copyDomain() *Domain {
+	return &Domain{domain.Nodes, domain.num_nodes}
+}
+
+// update the domain based on the displacement
+func (domain *Domain) UpDateDomain() {
+
+}
+
+// read in nodes from a files
+
+// generate a nodes using triangle ( A two dimensional meshfree generator )
+func (domain *Domain) TriGen(fileName []string, options []string) {
+
+}

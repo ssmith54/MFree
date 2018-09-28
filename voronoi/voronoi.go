@@ -5,8 +5,8 @@ type Voronoi struct {
 	num_polygons int
 }
 
-func NewVoronoi() {
-
+func NewVoronoi(polygonIn int, num_polygonsIn int) *Voronoi {
+	return &Voronoi{polygon: polygonIn, num_polygons: num_polygonsIn}
 }
 
 func GenerateVoronoi() {
