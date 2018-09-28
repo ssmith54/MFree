@@ -17,6 +17,8 @@ import (
 
 func main() {
 
+	// Generate the domain
+
 	// Construct meshfree shape functions
 	nodes := make([]domain.Node, 0)
 	// define the nodes
