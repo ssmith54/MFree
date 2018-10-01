@@ -4,6 +4,7 @@ package voronoi
 // #cgo LDFLAGS: -lm -L./C/gpc -lgpc
 //#include "C/jc_voronoi/jc_voronoi.h"
 //#include "callVoronoi.h"
+//#include "C/gpc/gpc.h"
 //
 import "C"
 import "unsafe"
@@ -25,8 +26,12 @@ func GenerateVoronoi(points []float64, boundary []int) *Voronoi {
 
 	// allocate C array for the points
 	cPoints := ((*C.double)(unsafe.Pointer(&points[0])))
+
+	// allocate return structure
+	voronoi_out := C.malloc(C.size_t(1*gpc_polygon**)    )
+
 	// clip said polygon, needs a GPC_polygon so will have to convert
-	C.callVoronoi(cPoints, numpoints)
+	C.callVoronoi(&voronoi_out, cPoints, numpoints)
 	// return a voronoi struct
 
 	return &v

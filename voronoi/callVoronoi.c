@@ -2,7 +2,7 @@
 #include "C/callVoronoi.h"
 
 
-int callVoronoi(double points[], int num_points){
+int callVoronoi(gpc_polygon*** voronoi_out, double points[], int num_points){
 
   // put points into jcv points structure and then call voronoi
   jcv_point voronoi_points[num_points] ;
@@ -16,6 +16,7 @@ int callVoronoi(double points[], int num_points){
 
   // allocate memory for voronoi diagram
   jcv_diagram diagram;
+  const jcv_site * sites = NULL;
   jcv_graphedge * graph_edge;
   memset(&diagram,0,sizeof(jcv_diagram));
 
@@ -23,6 +24,8 @@ int callVoronoi(double points[], int num_points){
   jcv_diagram_generate(num_points,voronoi_points,NULL,&diagram);
   printf("FINISHED GENERATING VORONOI DIAGRAM \n");
 
+  // get voronoi sites
+  sites = jcv_diagram_get_sites(&diagram);
 
   // move voronoi into gpc_polygon structure, where each polygon is stored
   // as a group of verticies
@@ -35,9 +38,44 @@ int callVoronoi(double points[], int num_points){
     voronoi[i]->num_contours = 1;
     voronoi[i]->contour = malloc(1*sizeof(gpc_vertex_list));
     voronoi[i]->contour->num_vertices = 0;
-    voronoi[i]->contour->vertex = malloc(voronoi[i]->contour->num_vertices*sizeof(gpc_vertex)); 
+    voronoi[i]->contour->vertex = malloc(voronoi[i]->contour->num_vertices*sizeof(gpc_vertex));
+  }
+
+  // loop over sites and set up output polygons
+  for (size_t i = 0; i < diagram.numsites; i++) {
+
+    // number of verticies in each cell
+    int numVert = 0;
+
+    graph_edge = sites[i].edges;
+    int indx = sites[i].index;
+
+
+    // loop over cell to get number of verticies
+    while(graph_edge){
+      ++numVert;
+      graph_edge = graph_edge->next;
+    }
+
+    // assign memory for the polygons
+    voronoi[indx]->contour->num_vertices = numVert;
+    voronoi[indx]->contour->vertex = malloc(numVert*sizeof(gpc_vertex));
+
+    // loop over edges
+    graph_edge = sites[i].edges;
+
+    for ( int k = 0 ; k < numVert ; k++){
+      voronoi[indx]->contour->vertex[k].x = graph_edge->pos[0].x;
+      voronoi[indx]->contour->vertex[k].y = graph_edge->pos[0].y;
+      graph_edge = graph_edge->next;
+    }
+
+
 
   }
+
+  *voronoi_out = voronoi;
+  // loop over each site and
   // initialise each polygon
 
 

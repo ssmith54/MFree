@@ -8,7 +8,7 @@
 #include "./jc_voronoi/jc_voronoi.h"
 #include "./gpc/gpc.h"
 
-int callVoronoi(double points[], int num_points);
+int callVoronoi(gpc_polygon *** voronoi_out, double points[], int num_points);
 
 
 
