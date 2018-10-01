@@ -97,7 +97,7 @@ void report(io, markers, reporttriangles, reportneighbors, reportsegments,
 	}
 }
 
-int trigen(double ** output_points, int ** boundary, char * options, char * fileName, int * numPoints ){
+int trigen(double ** output_points, int ** boundary, char * options, char * fileName, int * numPoints, int * numBoundary ){
 
 	char nodesFile[20] ;
 	char segsFile[20] ;
@@ -237,6 +237,7 @@ int trigen(double ** output_points, int ** boundary, char * options, char * file
 	*output_points = out->pointlist;
 	*boundary = connected_segments;
 	*numPoints = out->numberofpoints;
+	*numBoundary = out->numberofsegments -1;
 
 
 	// end of program, free memory !
