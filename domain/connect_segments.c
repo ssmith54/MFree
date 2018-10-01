@@ -15,12 +15,12 @@ int connect_segments(int * segments, int ** connected_segments, int num_segments
 	memcpy(segments_copy,segments,2*num_segments*sizeof(int));
 
 	// set first segment equal to segments[0]
-	connect_segments[0]= segments_copy[10];
-	connect_segments[1] = segments_copy[11];
+	connect_segments[0]= segments_copy[0];
+	connect_segments[1] = segments_copy[1];
 
 	// remove segment from the list
-	segments_copy[10] = -1;
-	segments_copy[11] = -1;
+	segments_copy[0] = -1;
+	segments_copy[1] = -1;
 
 	for (int i = 1; i < num_segments -1 ; ++i)
 	{

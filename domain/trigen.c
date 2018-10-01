@@ -121,12 +121,10 @@ int trigen(double ** output_points, int ** boundary, char * options, char * file
 	char * token;
 
 	FILE * fp = fopen(nodesFile,"r");
-	fgets(buf,sizeof(buf),fp);
-	token = strtok(buf,s);
+	if (fgets(buf,sizeof(buf),fp) != NULL)
+		token = strtok(buf,s);
 	in->numberofpoints = atoi(token);
 	token = strtok(NULL,s);
-	printf("token = %s\n",token );
-	printf("got here (a)\n");
 	int isAttribute = atoi(token);
 	if ( isAttribute == 1){
 		in->numberofpointattributes = 1;
@@ -136,7 +134,6 @@ int trigen(double ** output_points, int ** boundary, char * options, char * file
 		in->pointattributelist = NULL;
 	}
 	in->pointlist = malloc(in->numberofpoints*2*sizeof(double));
-	printf("got here (c) \n");
 	for ( int i = 0 ; i < in->numberofpoints ;i++){
 		if (fgets(buf,sizeof(buf),fp) != NULL)
 			token = strtok(buf,s);
@@ -174,8 +171,8 @@ int trigen(double ** output_points, int ** boundary, char * options, char * file
 	in->holelist = (double *) NULL;
 
 	// set of options inserted
-	printf("Input point set:\n");
-	report(in, 1, 0, 0, 1, 0, 0);
+	//printf("Input point set:\n");
+	//report(in, 1, 0, 0, 1, 0, 0);
 
 	/* Make necessary initializations so that Triangle can return a */
 	/*   triangulation in `out' and a voronoi diagram in `vorout'.  */
@@ -202,33 +199,18 @@ int trigen(double ** output_points, int ** boundary, char * options, char * file
 	/*   produce an edge list (e), a Voronoi diagram (v), and a triangle */
 	/*   neighbor list (n).                                              */
 
-	printf("passed triangulate \n");
 	/*  Failed at triangulate */
 	triangulate(options,in,out, (struct trianglulateio *) NULL);
 
-	printf("passed triangulate \n");
-	report(out, 1, 0, 0, 0, 0, 0);
+	//printf("passed triangulate \n");
+	//report(out, 1, 0, 0, 0, 0, 0);
 
 
-	// fill the jcv pointer
-
-	for (int i = 0; i < out->numberofsegments; ++i)
-	{
-		printf("Segment: %d %d\n", out->segmentlist[2*i], out->segmentlist[2*i+1] );
-				printf("segment marker: %d \n", out->segmentlist[i]);
-
-		/* code */
-	}
 
 	// find boundary
 	int * connected_segments = NULL;
 	connect_segments(out->segmentlist, &connected_segments, out->numberofsegments);
-	printf("got here (b)\n");
-	for (int i = 0; i < out->numberofsegments  ; ++i)
-	{
-		printf("Segment: %d %d\n", connected_segments[2*i], connected_segments[2*i+1] );
-				/* code */
-	}
+
 
 	*output_points = out->pointlist;
 	*boundary = connected_segments;
