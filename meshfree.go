@@ -40,7 +40,8 @@ func main() {
 	// Add nodes and set number of nodes in domain
 	domain := domain.NewDomain(nodes, numnodes)
 
-	domain.TriGen("", "")
+	domain.TriGen("preform", "pDa1")
+	domain.PrintNodesToImg("nodes")
 
 	// Meshfree structure
 	isConstantSpacing := true

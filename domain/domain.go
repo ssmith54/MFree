@@ -10,6 +10,10 @@ import (
 	"Meshfree/voronoi"
 	"fmt"
 	"unsafe"
+
+	"gonum.org/v1/plot"
+	"gonum.org/v1/plot/plotter"
+	"gonum.org/v1/plot/vg"
 )
 
 type Node struct {
@@ -18,11 +22,11 @@ type Node struct {
 }
 
 type Domain struct {
-	Nodes            []Node
-	num_nodes        int
-	voronoi          *voronoi.Voronoi
-	dim              int
-	boundarySegments []int
+	Nodes         []Node
+	num_nodes     int
+	voronoi       *voronoi.Voronoi
+	dim           int
+	boundaryNodes []int
 }
 
 // Create a new domain
@@ -76,17 +80,15 @@ func (domain *Domain) UpdateDomain() {
 func (domain *Domain) TriGen(fileName string, options string) {
 
 	// convert options and filename into a C string
-	//fileName_C := C.CString(fileName)
-	//options_C := C.CString(options)
+	fileName_C := C.CString(fileName)
+	options_C := C.CString(options)
 	// define the C outputs and inputs
 	var points *C.double
 	var boundary *C.int
 	var num_points C.int
 	var num_boundary C.int
 
-	fileNameIn := C.CString("preform")
-	optionsIn := C.CString("pDa1q0")
-	C.trigen(&points, &boundary, optionsIn, fileNameIn, &num_points, &num_boundary)
+	C.trigen(&points, &boundary, options_C, fileName_C, &num_points, &num_boundary)
 
 	// points
 	unsafePtr_points := unsafe.Pointer(points)
@@ -107,10 +109,10 @@ func (domain *Domain) TriGen(fileName string, options string) {
 	length_boundary := int(num_boundary)
 	fmt.Printf("numBoundary = %v", num_boundary)
 
-	boundary_nodes := arrayPtr_boundary[0:(2*length_boundary - 1)]
-	domain.boundarySegments = make([]int, 2*num_boundary-1)
-	for i := 0; i < 2*length_boundary-1; i++ {
-		domain.boundarySegments[i] = int(boundary_nodes[i])
+	boundary_nodes := arrayPtr_boundary[0:(2 * length_boundary)]
+	domain.boundaryNodes = make([]int, 2*num_boundary)
+	for i := 0; i < 2*length_boundary; i++ {
+		domain.boundaryNodes[i] = int(boundary_nodes[i])
 
 	}
 	// set up domain
@@ -127,5 +129,56 @@ func (domain *Domain) TetGen(fileName []string) {
 
 // generate the voronoi diagram
 func (domain *Domain) GenerateVoronoi() {
+
+}
+
+func (domain *Domain) PrintNodesToFile(filename string) {
+
+}
+
+func (domain *Domain) PrintNodesToImg(imagename string) {
+	p, err := plot.New()
+	if err != nil {
+		panic(err)
+	}
+
+	p.Title.Text = "Nodes"
+	p.X.Label.Text = "X"
+	p.Y.Label.Text = "Y"
+
+	var X, Y float64
+
+	// // scatter nodes
+	//pts := make(plotter.XYs, domain.num_nodes)
+	// for i := range pts {
+	// 	X, Y, _ = domain.GetNodalCoordinates(i)
+	// 	pts[i].X = X
+	// 	pts[i].Y = Y
+	// }
+	//
+	// s, err := plotter.NewScatter(pts)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	pts_boundary := make(plotter.XYs, len(domain.boundaryNodes))
+	for i := range pts_boundary {
+		indx := domain.boundaryNodes[i]
+		X, Y, _ = domain.GetNodalCoordinates(indx)
+		pts_boundary[i].X = X
+		pts_boundary[i].Y = Y
+	}
+	lpLine, _, err := plotter.NewLinePoints(pts_boundary)
+	if err != nil {
+		panic(err)
+	}
+
+	// add line and scatter to plot
+	p.Add(lpLine)
+
+	// Save the plot to a PNG file.
+	if err := p.Save(8*vg.Inch, 8*vg.Inch, "points.png"); err != nil {
+		panic(err)
+	}
 
 }

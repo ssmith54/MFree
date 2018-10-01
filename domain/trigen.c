@@ -125,13 +125,9 @@ int trigen(double ** output_points, int ** boundary, char * options, char * file
 	token = strtok(buf,s);
 	in->numberofpoints = atoi(token);
 	token = strtok(NULL,s);
+	printf("token = %s\n",token );
 	printf("got here (a)\n");
-	int isAttribute = 0;
-	if ( token != NULL)
-	{
-		isAttribute = 1;
-	}
-	printf("got here (b) \n");
+	int isAttribute = atoi(token);
 	if ( isAttribute == 1){
 		in->numberofpointattributes = 1;
 		in->pointattributelist = (double* )  malloc(in->numberofpoints*sizeof(double));
@@ -228,7 +224,7 @@ int trigen(double ** output_points, int ** boundary, char * options, char * file
 	int * connected_segments = NULL;
 	connect_segments(out->segmentlist, &connected_segments, out->numberofsegments);
 	printf("got here (b)\n");
-	for (int i = 0; i < out->numberofsegments -1 ; ++i)
+	for (int i = 0; i < out->numberofsegments  ; ++i)
 	{
 		printf("Segment: %d %d\n", connected_segments[2*i], connected_segments[2*i+1] );
 				/* code */
@@ -237,7 +233,7 @@ int trigen(double ** output_points, int ** boundary, char * options, char * file
 	*output_points = out->pointlist;
 	*boundary = connected_segments;
 	*numPoints = out->numberofpoints;
-	*numBoundary = out->numberofsegments -1;
+	*numBoundary = out->numberofsegments ;
 
 
 	// end of program, free memory !
