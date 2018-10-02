@@ -26,11 +26,11 @@ func main() {
 	// Meshfree structure
 	isConstantSpacing := true
 	isVariousPoints := false
-	gamma := []float64{1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2}
 	dim := 2
-	meshfree := shapefunctions.NewMeshfree(&domain, isConstantSpacing, isVariousPoints, dim, gamma)
-
-	p1 := geometry.NewPoint(0.25, 0.25, 0)
+	meshfree := shapefunctions.NewMeshfree(&domain, isConstantSpacing, isVariousPoints, dim, nil)
+	meshfree.SetConstantGamma(1.2)
+	meshfree.Set_basis_function_radii()
+	p1 := geometry.NewPoint(0, 0, 0)
 	tol := 1e-8
 	compute := 2
 

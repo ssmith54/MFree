@@ -50,7 +50,6 @@ func NewMeshfree(domainIn *domain.Domain, isConstantSpacingIn bool, isVariousPoi
 
 	m := Meshfree{domain: domainIn, isConstantSpacing: isConstantSpacingIn, isVariousPoints: isVariousPointsIn, dim: dimIn, gamma: gammaIn}
 	m.get_nodal_spacing()
-	m.set_basis_function_radii()
 	return &m
 }
 
@@ -91,6 +90,7 @@ func (meshfree *Meshfree) get_shifted_coordinates(p *geometry.Point, m *mat.Dens
 func (meshfree *Meshfree) SetConstantGamma(gamma float64) {
 	num_nodes := meshfree.domain.GetNumNodes()
 	if len(meshfree.gamma) < num_nodes {
+		fmt.Printf("got here \n")
 		meshfree.gamma = make([]float64, num_nodes)
 	}
 	for i := 0; i < meshfree.domain.GetNumNodes(); i++ {
@@ -411,16 +411,13 @@ func f_of_lamdba(dim int, weight *mat.VecDense, xs *mat.Dense, tol float64, max_
 
 }
 
-func (meshfree *Meshfree) set_basis_function_radii() {
+func (meshfree *Meshfree) Set_basis_function_radii() {
 
 	num_nodes := meshfree.domain.GetNumNodes()
 
 	if len(meshfree.basisFunctionRadii) < num_nodes {
 		meshfree.basisFunctionRadii = make([]float64, num_nodes)
 	}
-	fmt.Printf("\n\n\n\nnum_nodes %v\n", num_nodes)
-
-	fmt.Printf("\n\n\n\nnum_nodes %v\n", meshfree.gamma)
 
 	for i := 0; i < num_nodes; i++ {
 		if meshfree.isConstantSpacing == true {
