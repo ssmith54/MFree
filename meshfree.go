@@ -11,8 +11,6 @@ package main
 
 import (
 	"Meshfree/domain"
-	"Meshfree/geometry"
-	"Meshfree/shapefunctions"
 )
 
 func main() {
@@ -42,20 +40,20 @@ func main() {
 
 	domain.TriGen("square", "pDa0.05")
 	domain.PrintNodesToImg("nodes")
-	domain.GenerateVoronoi()
+	domain.GenerateClippedVoronoi()
 
-	// Meshfree structure
-	isConstantSpacing := true
-	isVariousPoints := false
-	gamma := []float64{1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2}
-	dim := 2
-	meshfree := shapefunctions.NewMeshfree(&domain, isConstantSpacing, isVariousPoints, dim, gamma)
-
-	p1 := geometry.NewPoint(0.25, 0.25, 0)
-	tol := 1e-8
-	compute := 2
-
-	// compute shape functions at p
-	meshfree.ComputeMeshfree(&p1, dim, compute, tol)
+	// // Meshfree structure
+	// isConstantSpacing := true
+	// isVariousPoints := false
+	// gamma := []float64{1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2}
+	// dim := 2
+	// meshfree := shapefunctions.NewMeshfree(&domain, isConstantSpacing, isVariousPoints, dim, gamma)
+	//
+	// p1 := geometry.NewPoint(0.25, 0.25, 0)
+	// tol := 1e-8
+	// compute := 2
+	//
+	// // compute shape functions at p
+	// meshfree.ComputeMeshfree(&p1, dim, compute, tol)
 
 }

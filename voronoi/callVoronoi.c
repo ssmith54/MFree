@@ -6,7 +6,7 @@ int callVoronoi(gpc_polygon*** voronoi_out, double points[], int num_points){
 
   // put points into jcv points structure and then call voronoi
   jcv_point voronoi_points[num_points] ;
-  printf("number of points = %d\n ", num_points);
+  printf("number of points = %d\n", num_points);
 
   for (int i = 0; i < num_points; i++) {
     voronoi_points[i].x = points[2*i];
@@ -75,6 +75,7 @@ int callVoronoi(gpc_polygon*** voronoi_out, double points[], int num_points){
   }
 
   *voronoi_out = voronoi;
+  jcv_diagram_free(&diagram);
   // loop over each site and
   // initialise each polygon
 

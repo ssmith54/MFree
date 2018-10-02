@@ -128,7 +128,7 @@ func (domain *Domain) TetGen(fileName []string) {
 }
 
 // generate the voronoi diagram
-func (domain *Domain) GenerateVoronoi() {
+func (domain *Domain) GenerateClippedVoronoi() {
 
 	// have to convert nodes it raw points
 	var x, y float64
@@ -138,7 +138,7 @@ func (domain *Domain) GenerateVoronoi() {
 		points[2*i] = x
 		points[2*i+1] = y
 	}
-	domain.voronoi = voronoi.GenerateVoronoi(points, domain.boundaryNodes)
+	domain.voronoi = voronoi.GenerateClippedVoronoi(points, domain.boundaryNodes)
 
 }
 
@@ -188,7 +188,7 @@ func (domain *Domain) PrintNodesToImg(imagename string) {
 	p.Add(lpLine, s)
 
 	// Save the plot to a PNG file.
-	if err := p.Save(8*vg.Inch, 8*vg.Inch, "points.png"); err != nil {
+	if err := p.Save(8*vg.Inch, 8*vg.Inch, "outputs/points.png"); err != nil {
 		panic(err)
 	}
 

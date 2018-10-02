@@ -80,8 +80,6 @@ typedef struct                      /* Polygon set structure             */
   int                 num_contours; /* Number of contours in polygon     */
   int                *hole;         /* Hole / external contour flags     */
   gpc_vertex_list    *contour;      /* Contour array pointer             */
-  double              attribute;
-  int                 index;
 } gpc_polygon;
 
 typedef struct                      /* Tristrip set structure            */
