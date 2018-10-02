@@ -22,7 +22,7 @@ int connect_segments(int * segments, int ** connected_segments, int num_segments
 	segments_copy[0] = -1;
 	segments_copy[1] = -1;
 
-	for (int i = 1; i < num_segments -1 ; ++i)
+	for (int i = 1; i < num_segments  ; ++i)
 	{
 		connect_segments[2*i] = connect_segments[2*(i-1) + 1];
 		connect_segments[2*i +1 ] = -1 ;

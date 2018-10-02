@@ -8,7 +8,9 @@ package voronoi
 //#include "./C/gpc/gpc.h"
 //
 import "C"
-import "unsafe"
+import (
+	"unsafe"
+)
 
 type Voronoi struct {
 	polygon      int
@@ -29,18 +31,16 @@ func GenerateClippedVoronoi(points []float64, boundary []int) *Voronoi {
 
 	// allocate C array for the points
 	cPoints := ((*C.double)(unsafe.Pointer(&points[0])))
-	cBoundary := (*C.int)(unsafe.Pointer(&boundary[0]))
+	cBoundary := ((*C.size_t)(unsafe.Pointer(&boundary[0])))
 	numBoundary := C.int(len(boundary))
 	var voronoi_out **C.gpc_polygon
 	// allocate return structure
 	//voronoi_out := C.malloc(C.size_t(1*gpc_polygon**)    )
-
 	// clip said polygon, needs a GPC_polygon so will have to convert
 	C.callVoronoi(&voronoi_out, cPoints, numpoints)
 	// return a voronoi struct
-
+	//
 	C.clipVoronoi(&voronoi_out, cPoints, cBoundary, numpoints, numBoundary)
-
 	// put voronoi out into a go slice so we can iterate over each voronoi cell
 
 	return &v

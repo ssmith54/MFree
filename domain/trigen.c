@@ -212,15 +212,24 @@ int trigen(double ** output_points, int ** boundary, char * options, char * file
 	connect_segments(out->segmentlist, &connected_segments, out->numberofsegments);
 
 
+	// prepare output points
+	int * boundaryPoints = malloc((out->numberofsegments)*sizeof(int));
+
+	for (size_t i = 0; i < out->numberofsegments; i++) {
+		boundaryPoints[i] = connected_segments[2*i] -1 ;
+		/* code */
+	}
+
+
 	*output_points = out->pointlist;
-	*boundary = connected_segments;
+	*boundary = boundaryPoints;
 	*numPoints = out->numberofpoints;
 	*numBoundary = out->numberofsegments ;
 
 
 	// end of program, free memory !
 
-
+	free(connected_segments);
 	free(in->pointlist);
  	free(in->pointattributelist);
  	free(in->pointmarkerlist);

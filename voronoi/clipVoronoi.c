@@ -3,7 +3,7 @@
 
 
 
-int clipVoronoi(gpc_polygon*** voronoi, double points[], int boundary[],int numPoints, int numBoundary)
+int clipVoronoi(gpc_polygon*** voronoi, double points[], size_t boundary[],int numPoints, int numBoundary)
 {
 
   // intial variables
@@ -13,32 +13,30 @@ int clipVoronoi(gpc_polygon*** voronoi, double points[], int boundary[],int numP
   // create the clipping polygon
   gpc_vertex clipVertex[numBoundary];
 
-  for (size_t i = 0; i < numBoundary; i++) {
+  for (int i = 0; i < numBoundary; i++) {
     clipVertex[i].x = points[2*boundary[i]];
     clipVertex[i].y = points[2*boundary[i]+1];
   }
 
   gpc_vertex_list clip_list = {.num_vertices = numBoundary, .vertex = clipVertex};
-  gpc_polygon clip_polygon = {.num_contours=1, .hole = NULL, .contour = &clip_list}  ;
-
-
+  gpc_polygon clip_polygon = {.num_contours=1, .hole = NULL, .contour = &clip_list};
 
 
   printf("CLIPPING VORONOI\n");
 
-  // // clip boundary cells
-  // for (size_t i = 0; i < numBoundary; i++) {
-  //
-  //   int indx = boundary[i];
-  //
-  //   gpc_polygon * clipped_polygon = malloc(1*sizeof(gpc_polygon));
-  //
-  //   gpc_polygon_clip(GPC_INT,&clip_polygon,(*voronoi)[indx],clipped_polygon);
-  //
-  //   gpc_free_polygon((*voronoi)[indx]);
-  //   (*voronoi)[indx] = clipped_polygon;
-  //   /* code */
-  // }
+  // clip boundary cells
+  for (size_t i = 0; i < numBoundary; i++) {
+
+    int indx = boundary[i];
+
+    gpc_polygon * clipped_polygon = malloc(1*sizeof(gpc_polygon));
+
+    gpc_polygon_clip(GPC_INT,&clip_polygon,(*voronoi)[indx],clipped_polygon);
+
+    gpc_free_polygon((*voronoi)[indx]);
+    (*voronoi)[indx] = clipped_polygon;
+    /* code */
+  }
 
   printf("FINISHED CLIPPING VORONOI\n");
 
@@ -54,6 +52,11 @@ int clipVoronoi(gpc_polygon*** voronoi, double points[], int boundary[],int numP
     	fclose(fp);
 
   }
+
+
+  fp = fopen("cells.txt","w");
+	gpc_write_polygon(fp, 0, &clip_polygon);
+  fclose(fp);
 
 
 

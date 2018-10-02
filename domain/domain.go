@@ -108,11 +108,11 @@ func (domain *Domain) TriGen(fileName string, options string) {
 	arrayPtr_boundary := (*[1 << 30]C.int)(unsafePtr_boundary)
 	// find number of nodes to store
 	length_boundary := int(num_boundary)
-	boundary_nodes := arrayPtr_boundary[0:(2 * (length_boundary - 1))]
+	boundary_nodes := arrayPtr_boundary[0:length_boundary]
 	// Put boundary nodes into domain
 	domain.boundaryNodes = make([]int, num_boundary)
-	for i := 0; i < length_boundary-1; i++ {
-		domain.boundaryNodes[i] = int(boundary_nodes[2*i] - 1)
+	for i := 0; i < length_boundary; i++ {
+		domain.boundaryNodes[i] = int(boundary_nodes[i])
 
 	}
 	// set up domain
