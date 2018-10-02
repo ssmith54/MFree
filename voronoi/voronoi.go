@@ -9,18 +9,26 @@ package voronoi
 //
 import "C"
 import (
+	"Meshfree/geometry"
 	"unsafe"
 )
 
+// polygon abstraction
+
 type Voronoi struct {
-	polygon      int
+	polygon_list []geometry.Polygon
 	num_polygons int
 }
 
 type _C_voronoi C.struct_gpc_polygon
 
-func NewVoronoi(polygonIn int, num_polygonsIn int) *Voronoi {
-	return &Voronoi{polygon: polygonIn, num_polygons: num_polygonsIn}
+func NewVoronoi(polygonIn []geometry.Polygon, num_polygonsIn int) *Voronoi {
+	return &Voronoi{polygon_list: polygonIn, num_polygons: num_polygonsIn}
+}
+
+func (voronoi *Voronoi) AddPolygon(polygon *geometry.Polygon) {
+	voronoi.polygon_list = append(voronoi.polygon_list, *polygon)
+	voronoi.num_polygons++
 }
 
 func GenerateClippedVoronoi(points []float64, boundary []int) *Voronoi {

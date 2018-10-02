@@ -37,4 +37,23 @@ func main() {
 	// compute shape functions at p
 	meshfree.ComputeMeshfree(&p1, dim, compute, tol)
 
+	// set up stabalised conforming nodal integration SCNI
+	// each cell just has a Bmatrix (axi, Pstress,Pstrain, 3D), and a volume. Simple?
+
+	// set up material
+
+	// set up boundary conditions
+
+	// store point marker list in domain
+
+	// set up timestepping
+
+	// do time steps
+	//-o-// Make a time step
+	//-o-// Find Fint, Fcontat, Fext
+	//-o-// Balance forces
+	//-o-// Energy balance
+
+	// postprocess
+
 }
