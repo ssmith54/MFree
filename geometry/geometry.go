@@ -72,4 +72,64 @@ func CreatePolygon(x_points, y_points []float64) (*Polygon, error) {
 
 func (polygon *Polygon) GetArea() {
 
+	var X1, Y1, X2, Y2, area float64
+	area = 0
+	for i := 0; i < polygon.num_vertices; i++ {
+
+		if i == polygon.num_vertices-1 {
+			X1 = polygon.vertex_list[i].x
+			Y1 = polygon.vertex_list[i].y
+			X2 = polygon.vertex_list[0].x
+			Y2 = polygon.vertex_list[0].y
+		} else {
+			X1 = polygon.vertex_list[i].x
+			Y1 = polygon.vertex_list[i].y
+			X2 = polygon.vertex_list[i+1].x
+			Y2 = polygon.vertex_list[i+1].y
+		}
+
+		area = area + (X1*Y2-Y1*X2)/2
+
+	}
+	polygon.area = math.Abs(area)
+
+}
+
+func (polygon *Polygon) GetNumVertices() int {
+	return polygon.num_vertices
+}
+
+func (polygon *Polygon) GetPolyCoordinates() ([]float64, []float64) {
+	x := make([]float64, 0)
+	y := make([]float64, 0)
+
+	for _, point := range polygon.vertex_list {
+		xtemp, ytemp, _ := point.GetPointCoordinates()
+
+		x = append(x, xtemp)
+		y = append(y, ytemp)
+	}
+
+	return x, y
+}
+
+func (polygon *Polygon) IsClockwise() bool {
+
+	x, y := polygon.GetPolyCoordinates()
+
+	// sum over edges
+	var sum float64 = 0
+	for i := 0; i < polygon.num_vertices; i++ {
+		if i == polygon.num_vertices-1 {
+			sum = sum + (x[0]-x[i])*(y[0]-y[i])
+		} else {
+			sum = sum + (x[i+1]-x[i])*(y[i+1]-y[i])
+		}
+
+	}
+	if sum > 0 {
+		return true
+	} else {
+		return false
+	}
 }

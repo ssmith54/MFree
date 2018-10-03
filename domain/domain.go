@@ -105,6 +105,7 @@ func (domain *Domain) TriGen(fileName string, options string) {
 	// void pointer to c array
 	unsafePtr_boundary := unsafe.Pointer(boundary)
 	// Convert C array into go array so we can access elements
+	// cast unsafe pointer
 	arrayPtr_boundary := (*[1 << 30]C.int)(unsafePtr_boundary)
 	// find number of nodes to store
 	length_boundary := int(num_boundary)

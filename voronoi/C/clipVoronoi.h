@@ -10,8 +10,7 @@
 
 
 
-int clipVoronoi(gpc_polygon *** voronoi, double points[], size_t boundary[],int numPoints, int numBoundary);
-
+int clipVoronoi(double ** output_vertex, int ** output_num_vertex, int * total_vertex,  gpc_polygon*** voronoi, double points[], size_t boundary[],int numPoints, int numBoundary);
 
 
 

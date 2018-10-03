@@ -19,7 +19,7 @@ func main() {
 
 	// Generate a domain, from a PLSG file and then generate clipped voronoi
 	var domain domain.Domain
-	domain.TriGen("square", "pDa0.05")
+	domain.TriGen("square", "pDa0.1")
 	domain.PrintNodesToImg("nodes")
 	domain.GenerateClippedVoronoi()
 
