@@ -23,8 +23,6 @@ type Voronoi struct {
 	num_polygons int
 }
 
-type _C_voronoi C.struct_gpc_polygon
-
 func NewVoronoi(polygonIn []geometry.Polygon, num_polygonsIn int) *Voronoi {
 	return &Voronoi{polygon_list: polygonIn, num_polygons: num_polygonsIn}
 }
@@ -88,8 +86,6 @@ func GenerateClippedVoronoi(points []float64, boundary []int) *Voronoi {
 			v.AddPolygon(poly)
 		}
 	}
-	v.PrintVoronoiToImg()
-
 	return &v
 }
 
@@ -97,8 +93,8 @@ func (voronoi *Voronoi) PrintVoronoi() {
 
 }
 
-func (voronoi *Voronoi) PrintVoronoiToImg() {
-
+func (voronoi *Voronoi) PrintVoronoiToImg(filename string) {
+	var xmin, xmax, ymin, ymax float64 = 0, 0, 0, 0
 	p, _ := plot.New()
 	for _, poly := range voronoi.polygon_list {
 
@@ -111,19 +107,42 @@ func (voronoi *Voronoi) PrintVoronoiToImg() {
 		for i := 0; i < poly.GetNumVertices(); i++ {
 			temp := XY{x[i], y[i]}
 			polygon_coords = append(polygon_coords, temp)
+
+			if x[i] > xmax {
+				xmax = x[i]
+			}
+			if x[i] < xmin {
+				xmin = x[i]
+			}
+			if y[i] > ymax {
+				ymax = y[i]
+			}
+			if y[i] < ymin {
+				ymin = x[i]
+			}
+
 		}
 
 		polygon, _ := plotter.NewPolygon(polygon_coords)
 		p.Add(polygon)
 	}
 
-	outer1 := plotter.XYs{{X: -5, Y: -10}, {X: 25, Y: -10}, {X: 25, Y: 10}, {X: -5, Y: 10}}
-	poly, _ := plotter.NewPolygon(outer1)
-	p.Add(poly)
+	// this is used to replicate the axis equal option of matlab
+	scale_y := (xmax - xmin) / (ymax - ymin)
+	scale_x := 1 / scale_y
+	if scale_y > 1 {
+		outer1 := plotter.XYs{{X: xmin, Y: ymin * scale_y}, {X: 1.1 * xmax, Y: ymin * scale_y}, {X: 1.1 * xmax, Y: ymax * scale_y}, {X: xmin, Y: ymax * scale_y}}
+		poly, _ := plotter.NewPolygon(outer1)
+		p.Add(poly)
+	} else {
+		outer1 := plotter.XYs{{X: xmin * scale_x, Y: ymin}, {X: xmax * scale_x, Y: ymin}, {X: xmax * scale_x, Y: ymax}, {X: xmin * scale_x, Y: ymax}}
+		poly, _ := plotter.NewPolygon(outer1)
+		p.Add(poly)
+	}
 
 	p.HideY()
 	p.HideX()
 
-	p.Save(1000, 1000, "outputs/voronoi.eps")
+	p.Save(1000, 1000, filename)
 
 }

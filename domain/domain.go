@@ -147,6 +147,12 @@ func (domain *Domain) PrintNodesToFile(filename string) {
 
 }
 
+// get voronoi
+
+func (domain *Domain) GetVoronoi() *voronoi.Voronoi {
+	return domain.voronoi
+}
+
 // print the domain to an img file
 func (domain *Domain) PrintNodesToImg(imagename string) {
 	p, err := plot.New()

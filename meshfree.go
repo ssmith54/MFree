@@ -19,11 +19,14 @@ func main() {
 
 	// Generate a domain, from a PLSG file and then generate clipped voronoi
 	var domain domain.Domain
-	domain.TriGen("square", "pDa0.1")
+	domain.TriGen("models/square", "pDa0.1")
 	domain.PrintNodesToImg("nodes")
 	domain.GenerateClippedVoronoi()
+	domain.GetVoronoi().PrintVoronoiToImg("outputs/cells.eps")
 
 	// Meshfree structure
+
+	// refers to the domain
 	isConstantSpacing := true
 	isVariousPoints := false
 	dim := 2
