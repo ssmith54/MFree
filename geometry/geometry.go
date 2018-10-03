@@ -14,6 +14,85 @@ type Polygon struct {
 	area         float64
 }
 
+type Rectangle struct {
+	vertex_list []Point // 4 points that define a rectangle
+	area        float64 // area
+}
+
+type Cylinder struct {
+	radius float64
+	p1     Point // p2------p2+r
+	p2     Point // p1------p1+r
+}
+
+type Circle struct {
+	radius float64
+	center Point
+}
+
+func subtract_points(a, b *Point) *Point {
+
+	cx := a.x - b.x
+	cy := a.y - b.y
+	cz := a.z - b.z
+
+	return &(Point{cx, cy, cz})
+
+}
+
+type Segment struct {
+	p1 *Point
+	p2 *Point
+}
+
+func NewSegment(p1, p2 *Point) *Segment {
+	return &(Segment{p1, p2})
+
+}
+
+type Dir struct {
+	e1 float64
+	e2 float64
+	e3 float64
+}
+
+func (segment *Segment) normal() *Dir {
+	nx := -(segment.p2.y - segment.p1.y)
+	ny := segment.p2.x - segment.p2.x
+	len := math.Sqrt(math.Pow(nx, 2) + math.Pow(ny, 2))
+	nx = nx / len
+	ny = ny / len
+	// return direction
+	return &(Dir{nx, ny, 0})
+}
+
+func (segment *Segment) length() float64 {
+	return math.Sqrt(math.Pow((segment.p2.x-segment.p1.x), 2) +
+		math.Pow((segment.p2.y-segment.p1.y), 2))
+}
+
+// IN ROUTINES, FINDS IF A POINT IS INSIDE A PRIMIATIVE SHAPE
+func (point *Point) InCircle(circle *Circle) bool {
+	// shift coordinates
+	shifted_point := subtract_points(point, &circle.center)
+	shifted_radius := math.Sqrt(math.Pow(shifted_point.x, 2) + math.Pow(shifted_point.y, 2))
+	if shifted_radius <= circle.radius {
+		return true
+	} else {
+		return false
+	}
+
+}
+func (point *Point) InCylinder() bool {
+
+	return true
+}
+
+func (point *Point) InRectangle() bool {
+
+	return true
+}
+
 // a 3D polygon, internal representation is the same as
 // polygon, however different operations will be defined on polytopes
 type Polytope struct {
@@ -65,8 +144,6 @@ func CreatePolygon(x_points, y_points []float64) (*Polygon, error) {
 	poly.GetArea()
 
 	return poly, nil
-	//	err := errors.New("x and y were not the same size")
-	// raise an error if the size of x and y is difrent
 
 }
 

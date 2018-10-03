@@ -178,14 +178,41 @@ func (domain *Domain) PrintNodesToImg(imagename string) {
 	if err != nil {
 		panic(err)
 	}
-
+	var xmax, xmin, ymax, ymin float64 = 0, 0, 0, 0
 	pts_boundary := make(plotter.XYs, len(domain.boundaryNodes))
 	for i := range pts_boundary {
 		indx := domain.boundaryNodes[i]
 		X, Y, _ = domain.GetNodalCoordinates(indx)
 		pts_boundary[i].X = X
 		pts_boundary[i].Y = Y
+
+		if X > xmax {
+			xmax = X
+		}
+		if X < xmin {
+			xmin = X
+		}
+		if Y > ymax {
+			ymax = Y
+		}
+		if Y < ymin {
+			ymin = Y
+		}
 	}
+
+	// this is used to replicate the axis equal option of matlab
+	scale_y := (xmax - xmin) / (ymax - ymin)
+	scale_x := 1 / scale_y
+	if scale_y > 1 {
+		outer1 := plotter.XYs{{X: xmin, Y: ymin * scale_y}, {X: 1.1 * xmax, Y: ymin * scale_y}, {X: 1.1 * xmax, Y: ymax * scale_y}, {X: xmin, Y: ymax * scale_y}}
+		poly, _ := plotter.NewPolygon(outer1)
+		p.Add(poly)
+	} else {
+		outer1 := plotter.XYs{{X: xmin * scale_x, Y: ymin}, {X: xmax * scale_x, Y: ymin}, {X: xmax * scale_x, Y: ymax}, {X: xmin * scale_x, Y: ymax}}
+		poly, _ := plotter.NewPolygon(outer1)
+		p.Add(poly)
+	}
+
 	lpLine, _, err := plotter.NewLinePoints(pts_boundary)
 	if err != nil {
 		panic(err)
