@@ -10,15 +10,22 @@ Features:
 -
 
 <h2> Usage: </h2>
+
 Edit meshfree.go:
-- Create a domain using a PLSG, examples are in the models folder
-- Create meshfree domain
-- Create voronoi diagram
-- Create SCNI cells
-- Create boundary conditions
-- Choose material
-- Set up time stepping
-- Choose outputs to save
-- From root
--- go build -a
--- ./meshfree
+<ul>
+<li> Create a domain using a PLSG, examples are in the models folder </li>
+<li> Create meshfree domain</li>
+<li> Create voronoi diagram</li>
+<li> Create SCNI cells</li>
+<li> Create boundary conditions</li>
+<li> Choose material</li>
+<li> Set up time stepping</li>
+<li> Choose outputs to save</li>
+<li> From root</li>
+</ul>
+
+<h4> Finally in the root folder</h4>
+<ul>
+<li> go build -a</li>
+<li> ./meshfree </li>
+</ul>
