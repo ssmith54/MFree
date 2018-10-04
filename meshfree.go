@@ -30,15 +30,15 @@ func main() {
 	isConstantSpacing := true
 	isVariousPoints := false
 	dim := 2
-	meshfree := shapefunctions.NewMeshfree(&domain, isConstantSpacing, isVariousPoints, dim, nil)
+	tol := 1e-8
+	meshfree := shapefunctions.NewMeshfree(&domain, isConstantSpacing, isVariousPoints, dim, nil, tol)
 	meshfree.SetConstantGamma(1.2)
 	meshfree.Set_basis_function_radii()
 	p1 := geometry.NewPoint(0, 0, 0)
-	tol := 1e-8
 	compute := 2
 
 	// compute shape functions at p
-	meshfree.ComputeMeshfree(&p1, dim, compute, tol)
+	meshfree.ComputeMeshfree(&p1, compute)
 
 	// set up stabalised conforming nodal integration SCNI
 	// each cell just has a Bmatrix (axi, Pstress,Pstrain, 3D), and a volume. Simple?

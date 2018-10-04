@@ -96,7 +96,7 @@ func GenerateClippedVoronoi(points []float64, boundary []int) *Voronoi {
 func (voronoi *Voronoi) PrintVoronoi() {
 
 }
-func (voronoi *Voronoi) GetVoronoiCells() *[]geometry.Polygon {
+func (voronoi *Voronoi) ReturnVoronoiCells() *[]geometry.Polygon {
 	return &voronoi.polygon_list
 }
 

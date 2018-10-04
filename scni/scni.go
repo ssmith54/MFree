@@ -1,7 +1,6 @@
 package scni
 
 import (
-	"Meshfree/shapefunctions"
 	"Meshfree/voronoi"
 
 	"gonum.org/v1/gonum/mat"
@@ -15,16 +14,15 @@ type SCNI struct {
 	volume     float64
 }
 
-func CreateSCNI(meshfree *shapefunctions.Meshfree, voronoi *voronoi.Voronoi) {
-	//
-	a := *voronoi.GetVoronoiCells()
+func CreateSCNI(voronoi *voronoi.Voronoi) {
+	cells := *voronoi.ReturnVoronoiCells()
+	//phi_vec := make([]float64, meshfree.GetDomain().GetNumNodes())
+	for _, cell := range cells {
 
-	// scni := make([]SCNI, voronoi.NumPolygons()
-	// numMeshfreeNodes := meshfree.GetDomain().GetNumNodes()
-	// phi_vec := make([]float64, numMeshfreeNodes)
-	// for _, cell := range *voronoi.GetVoronoi() {
-	// }
-	//
-	// return &scni
+		points := cell.GetPolygonPoints()
+
+		// find shape functions at each point
+
+	}
 
 }

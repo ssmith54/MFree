@@ -231,6 +231,11 @@ func (polygon *Polygon) GetPolyCoordinates() ([]float64, []float64) {
 	return x, y
 }
 
+func (polygon *Polygon) GetPolygonPoints() *[]Point {
+	return &polygon.vertex_list
+
+}
+
 func (polygon *Polygon) IsClockwise() bool {
 
 	x, y := polygon.GetPolyCoordinates()

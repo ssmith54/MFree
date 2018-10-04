@@ -44,17 +44,21 @@ type Meshfree struct {
 	isVariousPoints    bool
 	basisFunctionRadii []float64
 	dim                int
+	tol                float64
 }
 
-func NewMeshfree(domainIn *domain.Domain, isConstantSpacingIn bool, isVariousPointsIn bool, dimIn int, gammaIn []float64) *Meshfree {
+func NewMeshfree(domainIn *domain.Domain, isConstantSpacingIn bool, isVariousPointsIn bool, dimIn int, gammaIn []float64, tolIn float64) *Meshfree {
 
-	m := Meshfree{domain: domainIn, isConstantSpacing: isConstantSpacingIn, isVariousPoints: isVariousPointsIn, dim: dimIn, gamma: gammaIn}
+	m := Meshfree{domain: domainIn, isConstantSpacing: isConstantSpacingIn, isVariousPoints: isVariousPointsIn, dim: dimIn, gamma: gammaIn, tol: tolIn}
 	m.get_nodal_spacing()
 	return &m
 }
 
 func (meshfree *Meshfree) GetDomain() *domain.Domain {
 	return meshfree.domain
+}
+func (meshfree *Meshfree) SetTol(tolIn float64) {
+	meshfree.tol = tolIn
 }
 
 func (meshfree *Meshfree) get_shifted_coordinates(p *geometry.Point, m *mat.Dense) {
@@ -103,11 +107,13 @@ func (meshfree *Meshfree) SetConstantGamma(gamma float64) {
 }
 
 // compute meshfree shape functions
-func (meshfree *Meshfree) ComputeMeshfree(p *geometry.Point, dim int, compute int, tol float64) int {
+func (meshfree *Meshfree) ComputeMeshfree(p *geometry.Point, compute int) int {
 
 	fmt.Printf("----------------------------------------------------------------------------\n")
 	fmt.Printf("Constructing meshfree shape functions at p = %v\n\n", p)
 	// get number of nodes
+	dim := meshfree.dim
+	tol := meshfree.tol
 	num_nodes := meshfree.domain.GetNumNodes()
 	// get shifted coordinates
 	shifted_coordinates := mat.NewDense(num_nodes, dim, nil)
