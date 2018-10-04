@@ -1,3 +1,5 @@
+<h1> NOTE: This is currently a work in progress </h1>
+
 <h1> Mfree: A meshfree library written in go-lang </h1>
 
 This repository contains the code for an open source go lang that implementents a variant on the element-free Galerkin method. The current release of this library allows for the simulation of nonlinear 2D and axisymmetric problems using an explicit solver.
@@ -21,7 +23,6 @@ Edit meshfree.go:
 <li> Choose material</li>
 <li> Set up time stepping</li>
 <li> Choose outputs to save</li>
-<li> From root</li>
 </ul>
 
 <h4> Finally in the root folder</h4>
