@@ -15,8 +15,10 @@ type Polygon struct {
 }
 
 type Rectangle struct {
-	vertex_list []Point // 4 points that define a rectangle
-	area        float64 // area
+	A    Point
+	B    Point
+	C    Point
+	area float64 // area
 }
 
 type Cylinder struct {
@@ -56,6 +58,16 @@ type Dir struct {
 	e3 float64
 }
 
+type Vector struct {
+	e1 float64
+	e2 float64
+	e3 float64
+}
+
+func createVector(p1, p2 Point) *Vector {
+	return &(Vector{p2.x - p1.x, p2.y - p1.y, p2.z - p1.z})
+}
+
 func (segment *Segment) normal() *Dir {
 	nx := -(segment.p2.y - segment.p1.y)
 	ny := segment.p2.x - segment.p2.x
@@ -72,23 +84,52 @@ func (segment *Segment) length() float64 {
 }
 
 // IN ROUTINES, FINDS IF A POINT IS INSIDE A PRIMIATIVE SHAPE
-func (point *Point) InCircle(circle *Circle) bool {
+func (circle *Circle) InCircle(points *[]Point) *[]bool {
 	// shift coordinates
-	shifted_point := subtract_points(point, &circle.center)
-	shifted_radius := math.Sqrt(math.Pow(shifted_point.x, 2) + math.Pow(shifted_point.y, 2))
-	if shifted_radius <= circle.radius {
-		return true
-	} else {
-		return false
+	isIn := make([]bool, len(*points))
+	for i := 0; i < len(*points); i++ {
+		shifted_point := subtract_points(&(*points)[i], &circle.center)
+		shifted_radius := math.Sqrt(math.Pow(shifted_point.x, 2) + math.Pow(shifted_point.y, 2))
+		if shifted_radius <= circle.radius {
+			isIn[i] = true
+		} else {
+			isIn[i] = false
+		}
 	}
+	return &isIn
 
 }
-func (point *Point) InCylinder() bool {
+func (cylinder *Cylinder) InCylinder(points *[]Point) bool {
 
 	return true
 }
 
-func (point *Point) InRectangle() bool {
+func (point *Point) dot(a *Point) float64 {
+	return point.x*a.x + point.y*a.y + point.z*a.z
+}
+
+func (vector *Vector) dot(a *Vector) float64 {
+
+	return vector.e1*a.e1 + vector.e2*a.e2 + vector.e3*a.e3
+
+}
+
+func (rectangle *Rectangle) InRectangle(points *[]Point) bool {
+	AB := createVector(rectangle.B, rectangle.A)
+	BC := createVector(rectangle.C, rectangle.B)
+
+	isIn := make([]bool, len(*points))
+	for i := 0; i < len(isIn); i++ {
+		AM := createVector((*points)[i], rectangle.A)
+		BM := createVector((*points)[i], rectangle.B)
+		if (0 <= AB.dot(AM)) && (AB.dot(AM) <= AB.dot(AB)) &&
+			(BC.dot(BM) <= BC.dot(BC)) {
+			isIn[i] = true
+		} else {
+			isIn[i] = false
+		}
+
+	}
 
 	return true
 }

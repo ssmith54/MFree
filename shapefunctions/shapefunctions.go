@@ -53,6 +53,10 @@ func NewMeshfree(domainIn *domain.Domain, isConstantSpacingIn bool, isVariousPoi
 	return &m
 }
 
+func (meshfree *Meshfree) GetDomain() *domain.Domain {
+	return meshfree.domain
+}
+
 func (meshfree *Meshfree) get_shifted_coordinates(p *geometry.Point, m *mat.Dense) {
 	num_r, num_c := m.Dims()
 

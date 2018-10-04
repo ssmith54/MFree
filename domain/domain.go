@@ -28,6 +28,10 @@ type Domain struct {
 	boundaryNodes []int
 }
 
+func (domain *Domain) GetDim() int {
+	return domain.dim
+}
+
 // Create a new domain
 func NewDomain(nodes []Node, numnodes int) Domain {
 	return Domain{nodes, numnodes, nil, 0, nil}
