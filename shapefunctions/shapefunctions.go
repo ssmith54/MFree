@@ -98,7 +98,6 @@ func (meshfree *Meshfree) get_shifted_coordinates(p *geometry.Point, m *mat.Dens
 func (meshfree *Meshfree) SetConstantGamma(gamma float64) {
 	num_nodes := meshfree.domain.GetNumNodes()
 	if len(meshfree.gamma) < num_nodes {
-		fmt.Printf("got here \n")
 		meshfree.gamma = make([]float64, num_nodes)
 	}
 	for i := 0; i < meshfree.domain.GetNumNodes(); i++ {
@@ -107,10 +106,8 @@ func (meshfree *Meshfree) SetConstantGamma(gamma float64) {
 }
 
 // compute meshfree shape functions
-func (meshfree *Meshfree) ComputeMeshfree(p *geometry.Point, compute int) int {
+func (meshfree *Meshfree) ComputeMeshfree(p *geometry.Point, compute int, isPrint bool) (*mat.VecDense, *mat.Dense, *[]int, error) {
 
-	fmt.Printf("----------------------------------------------------------------------------\n")
-	fmt.Printf("Constructing meshfree shape functions at p = %v\n\n", p)
 	// get number of nodes
 	dim := meshfree.dim
 	tol := meshfree.tol
@@ -122,7 +119,6 @@ func (meshfree *Meshfree) ComputeMeshfree(p *geometry.Point, compute int) int {
 
 	// get neighbours of point p
 	neighbours := meshfree.get_neighbours(shifted_coordinates)
-	fmt.Printf("-%v neighbours of point p=%v\n", len(neighbours), neighbours)
 
 	// find contributing shifted_coordinates xS_c and
 	xS_c := mat.NewDense(len(neighbours), dim, nil)
@@ -137,25 +133,26 @@ func (meshfree *Meshfree) ComputeMeshfree(p *geometry.Point, compute int) int {
 
 	// MAXENT
 	// Find phi from solving the newton raphson problem
-	fmt.Printf("-Starting Newton-Raphson iterations to find phi\n")
 	phi, err := f_of_lamdba(dim, weight, xS_c, tol, 100)
-	//phiDer := mat.NewDense(len(neighbours), dim, nil)
+	phiDer := mat.NewDense(len(neighbours), dim, nil)
 	if err != nil {
 		fmt.Println(err)
-		return 1
+		return nil, nil, nil, err
 	}
-
-	fmt.Printf("Finding shape function derivatives\n ")
 
 	// compute phiDer matricies
 	if compute == 2 {
-		compute_phiDer(phi, xS_c, weight, weightDer)
+		phiDer = compute_phiDer(phi, xS_c, weight, weightDer)
 	}
 
-	// MLS
-	fmt.Printf("----------------------------------------------------------------------------\n")
-
-	return 1
+	if isPrint == true {
+		fmt.Printf("-%v neighbours of point p=%v\n", len(neighbours), neighbours)
+		fmt.Printf("phi=\n%v\n", mat.Formatted(phi, mat.Prefix(""), mat.Squeeze()))
+		if compute == 2 {
+			fmt.Printf("dphider=\n%v\n", mat.Formatted(phi, mat.Prefix(""), mat.Squeeze()))
+		}
+	}
+	return phi, phiDer, &neighbours, nil
 }
 
 func outer_product_vectors(a *mat.VecDense, b *mat.VecDense) *mat.Dense {
@@ -171,7 +168,7 @@ func outer_product_vectors(a *mat.VecDense, b *mat.VecDense) *mat.Dense {
 	return c
 }
 
-func compute_phiDer(phi *mat.VecDense, xS_c *mat.Dense, weight *mat.VecDense, weightDer *mat.Dense) int {
+func compute_phiDer(phi *mat.VecDense, xS_c *mat.Dense, weight *mat.VecDense, weightDer *mat.Dense) *mat.Dense {
 	// compute phi der = phi * (x_s . (inv(H) - inv(H).A  ) + MA - MC )
 	// MA = weightDer/weight,
 	// MC = phi.MA
@@ -253,18 +250,9 @@ func compute_phiDer(phi *mat.VecDense, xS_c *mat.Dense, weight *mat.VecDense, we
 
 		phiDer.Mul(phi_mat, term_1)
 
-		fmt.Printf("H=\n%v\n", mat.Formatted(H, mat.Prefix(""), mat.Squeeze()))
-		fmt.Printf("MA=\n%v\n", mat.Formatted(MA, mat.Prefix(""), mat.Squeeze()))
-		fmt.Printf("A=\n%v\n", mat.Formatted(A, mat.Prefix(""), mat.Squeeze()))
-		fmt.Printf("weight=\n%v\n", mat.Formatted(weight, mat.Prefix(""), mat.Squeeze()))
-		fmt.Printf("MC_Mat=\n%v\n", mat.Formatted(MC_mat, mat.Prefix(""), mat.Squeeze()))
-		fmt.Printf("weightDer=\n%v\n", mat.Formatted(weightDer, mat.Prefix(""), mat.Squeeze()))
-
-		fmt.Printf("phiDer=\n%v\n", mat.Formatted(phiDer, mat.Prefix(""), mat.Squeeze()))
-
 	} // end of dim 2 or 3
 
-	return 1
+	return phiDer
 }
 
 func f_of_lamdba(dim int, weight *mat.VecDense, xs *mat.Dense, tol float64, max_iter int) (*mat.VecDense, error) {
@@ -414,8 +402,6 @@ func f_of_lamdba(dim int, weight *mat.VecDense, xs *mat.Dense, tol float64, max_
 		}
 		// end of dim == 2
 	}
-	fmt.Printf("******SUCCESS*******\n")
-	fmt.Printf("Newton raphson scheme converged in %v iterations \nphi=\n%v\n", num_iterations, mat.Formatted(phi, mat.Prefix(""), mat.Squeeze()))
 
 	return phi, nil
 

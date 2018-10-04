@@ -12,6 +12,7 @@ package main
 import (
 	"Meshfree/domain"
 	"Meshfree/geometry"
+	"Meshfree/scni"
 	"Meshfree/shapefunctions"
 )
 
@@ -38,7 +39,9 @@ func main() {
 	compute := 2
 
 	// compute shape functions at p
-	meshfree.ComputeMeshfree(&p1, compute)
+	meshfree.ComputeMeshfree(&p1, compute, true)
+
+	scni.CreateSCNI(meshfree, domain.GetVoronoi())
 
 	// set up stabalised conforming nodal integration SCNI
 	// each cell just has a Bmatrix (axi, Pstress,Pstrain, 3D), and a volume. Simple?
