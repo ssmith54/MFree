@@ -43,6 +43,18 @@ func NewNode(x, y, z float64, nr int) *Node {
 	return &node
 }
 
+func FindNodesIn(nodes *[]Node, shape geometry.Shape) []Node {
+	n := make([]Node, 0)
+	for _, node := range *nodes {
+		isIn := shape.IsPointInside(&node.coords)
+
+		if isIn == true {
+			n = append(n, node)
+		}
+	}
+	return n
+}
+
 // add nodes to domain
 func (domain *Domain) AddNodes(nodes ...*Node) int {
 	for _, nodes := range nodes {

@@ -7,6 +7,10 @@ import (
 	"math"
 )
 
+type Shape interface {
+	IsPointInside(point *Point) bool
+}
+
 // represent a polygon using this struct
 type Polygon struct {
 	vertex_list  []Point
@@ -15,10 +19,9 @@ type Polygon struct {
 }
 
 type Rectangle struct {
-	A    Point
-	B    Point
-	C    Point
-	area float64 // area
+	A Point
+	B Point
+	C Point
 }
 
 type Cylinder struct {
@@ -108,6 +111,16 @@ func (cylinder *Cylinder) InCylinder(points *[]Point) bool {
 	return true
 }
 
+// create a Rectangle
+// b ------------
+// |            |
+// |            |
+// a------------c
+//
+func CreateRectangle(ax, ay, bx, by, cx, cy float64) *Rectangle {
+	return &(Rectangle{NewPoint(ax, ay, 0), NewPoint(bx, by, 0), NewPoint(cx, cy, 0)})
+}
+
 func (point *Point) dot(a *Point) float64 {
 	return point.x*a.x + point.y*a.y + point.z*a.z
 }
@@ -118,24 +131,20 @@ func (vector *Vector) dot(a *Vector) float64 {
 
 }
 
-func (rectangle *Rectangle) InRectangle(points *[]Point) bool {
+func (rectangle *Rectangle) IsPointInside(point *Point) bool {
 	AB := createVector(rectangle.B, rectangle.A)
 	BC := createVector(rectangle.C, rectangle.B)
 
-	isIn := make([]bool, len(*points))
-	for i := 0; i < len(isIn); i++ {
-		AM := createVector((*points)[i], rectangle.A)
-		BM := createVector((*points)[i], rectangle.B)
-		if (0 <= AB.dot(AM)) && (AB.dot(AM) <= AB.dot(AB)) &&
-			(BC.dot(BM) <= BC.dot(BC)) {
-			isIn[i] = true
-		} else {
-			isIn[i] = false
-		}
-
+	var isIn bool
+	AM := createVector((*point), rectangle.A)
+	BM := createVector((*point), rectangle.B)
+	if (0 <= AB.dot(AM)) && (AB.dot(AM) <= AB.dot(AB)) &&
+		(BC.dot(BM) <= BC.dot(BC)) {
+		isIn = true
+	} else {
+		isIn = false
 	}
-
-	return true
+	return isIn
 }
 
 // a 3D polygon, internal representation is the same as
