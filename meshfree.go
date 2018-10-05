@@ -20,7 +20,7 @@ func main() {
 
 	// Generate a domain, from a PLSG file and then generate clipped voronoi
 	var domain domain.Domain
-	domain.TriGen("models/square", "pDa0.01")
+	domain.TriGen("models/square", "pDa0.05")
 	domain.PrintNodesToImg("nodes")
 	domain.GenerateClippedVoronoi()
 	domain.GetVoronoi().PrintVoronoiToImg("outputs/cells.eps")
@@ -39,7 +39,7 @@ func main() {
 	compute := 2
 
 	// compute shape functions at p
-	meshfree.ComputeMeshfree(&p1, compute, true)
+	meshfree.ComputeMeshfree(&p1, compute, false)
 
 	scni.CreateSCNI(meshfree, domain.GetVoronoi())
 

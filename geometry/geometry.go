@@ -68,17 +68,21 @@ func createVector(p1, p2 Point) *Vector {
 	return &(Vector{p2.x - p1.x, p2.y - p1.y, p2.z - p1.z})
 }
 
-func (segment *Segment) normal() *Dir {
-	nx := -(segment.p2.y - segment.p1.y)
-	ny := segment.p2.x - segment.p2.x
+func (segment *Segment) Normal(isCW bool) (float64, float64) {
+	nx := segment.p2.y - segment.p1.y
+	ny := segment.p2.x - segment.p1.x
 	len := math.Sqrt(math.Pow(nx, 2) + math.Pow(ny, 2))
 	nx = nx / len
 	ny = ny / len
 	// return direction
-	return &(Dir{nx, ny, 0})
+	if isCW == true {
+		return nx, -ny
+	} else {
+		return -nx, ny
+	}
 }
 
-func (segment *Segment) length() float64 {
+func (segment *Segment) Length() float64 {
 	return math.Sqrt(math.Pow((segment.p2.x-segment.p1.x), 2) +
 		math.Pow((segment.p2.y-segment.p1.y), 2))
 }
@@ -187,7 +191,10 @@ func CreatePolygon(x_points, y_points []float64) (*Polygon, error) {
 	return poly, nil
 
 }
+func (polygon *Polygon) ReturnArea() float64 {
+	return polygon.area
 
+}
 func (polygon *Polygon) GetArea() {
 
 	var X1, Y1, X2, Y2, area float64
