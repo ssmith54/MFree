@@ -7,6 +7,11 @@
 // Version    : 1.0
 // Date       : 25/09/2018
 
+// Problem : Tip loaded cantilever beam
+
+// F^ |-------------------|//
+//  | |                   |//
+//  | |-------------------|//
 package main
 
 import (
@@ -24,6 +29,10 @@ func main() {
 	domain.PrintNodesToImg("nodes")
 	domain.GenerateClippedVoronoi()
 	domain.GetVoronoi().PrintVoronoiToImg("outputs/cells.eps")
+
+	// create boundary conditions
+
+	// find nodes on traction and displacement boundaries
 
 	// Meshfree structure
 
