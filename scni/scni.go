@@ -82,19 +82,19 @@ func createCell(meshfree *shapefunctions.Meshfree, poly *geometry.Polygon) *SCNI
 	} // end of loop over segments
 	scni.num_neighbours = len(neigh_cell)
 	scni.contribute = neigh_cell
-
+	// set volume of cell
+	scni.volume = poly.ReturnArea()
 	// assume its just a 2D plane strain or plane stress problem at the moment
 	Bmat := mat.NewDense(3, 2*scni.num_neighbours, nil)
 	// now have bi1 and bi2 vectors, need to make B matrix
 	for i := 0; i < scni.num_neighbours; i++ {
-		Bmat.Set(0, 2*i, bI1v[i])
-		Bmat.Set(1, 2*i+1, bI2v[i])
-		Bmat.Set(2, 2*i, bI2v[i])
-		Bmat.Set(2, 2*i+1, bI1v[i])
+		Bmat.Set(0, 2*i, bI1v[i]/scni.volume)
+		Bmat.Set(1, 2*i+1, bI2v[i]/scni.volume)
+		Bmat.Set(2, 2*i, bI2v[i]/scni.volume)
+		Bmat.Set(2, 2*i+1, bI1v[i]/scni.volume)
 	}
 	scni.Bmat = Bmat
-	// set volume of cell
-	scni.volume = poly.ReturnArea()
+
 	return scni
 }
 

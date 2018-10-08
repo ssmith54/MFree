@@ -27,6 +27,7 @@ package shapefunctions
 import (
 	"Meshfree/domain"
 	"Meshfree/geometry"
+	"Meshfree/node"
 	"errors"
 	"fmt"
 	"math"
@@ -69,14 +70,14 @@ func (meshfree *Meshfree) get_shifted_coordinates(p *geometry.Point, m *mat.Dens
 	var px, py, pz float64
 	if num_c == 1 {
 		for i := 0; i < num_r; i++ {
-			nx, _, _ = meshfree.domain.GetNodalCoordinates(i)
+			nx, _, _ = meshfree.domain.Nodes[i].GetNodalCoordinates()
 			px, _, _ = p.GetPointCoordinates()
 			m.Set(i, 0, nx-px)
 		}
 	}
 	if num_c == 2 {
 		for i := 0; i < num_r; i++ {
-			nx, ny, _ = meshfree.domain.GetNodalCoordinates(i)
+			nx, ny, _ = meshfree.domain.Nodes[i].GetNodalCoordinates()
 			px, py, _ = p.GetPointCoordinates()
 			m.Set(i, 0, nx-px)
 			m.Set(i, 1, ny-py)
@@ -85,7 +86,7 @@ func (meshfree *Meshfree) get_shifted_coordinates(p *geometry.Point, m *mat.Dens
 
 	if num_c == 3 {
 		for i := 0; i < num_r; i++ {
-			nx, ny, nz = meshfree.domain.GetNodalCoordinates(i)
+			nx, ny, nz = meshfree.domain.Nodes[i].GetNodalCoordinates()
 			px, py, pz = p.GetPointCoordinates()
 			m.Set(i, 0, nx-px)
 			m.Set(i, 1, ny-py)
@@ -503,7 +504,7 @@ func (meshfree *Meshfree) get_nodal_spacing() {
 	for i, nodeI := range meshfree.domain.Nodes {
 		for j, nodeJ := range meshfree.domain.Nodes {
 			if i != j {
-				distanceMin[j] = domain.GetNodalDistance(&nodeI, &nodeJ)
+				distanceMin[j] = node.GetNodalDistance(&nodeI, &nodeJ)
 			} else {
 				distanceMin[j] = 100
 			}

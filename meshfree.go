@@ -17,6 +17,7 @@ package main
 import (
 	"Meshfree/domain"
 	"Meshfree/geometry"
+	"Meshfree/node"
 	"Meshfree/scni"
 	"Meshfree/shapefunctions"
 	"fmt"
@@ -31,7 +32,7 @@ func main() {
 	physical_domain.PrintNodesToImg("nodes")
 	physical_domain.GenerateClippedVoronoi()
 	physical_domain.GetVoronoi().PrintVoronoiToImg("outputs/cells.eps")
-	nodesIn := domain.FindNodesIn(&physical_domain.Nodes, geometry.CreateRectangle(0, 0, .1, .1, 0, 2))
+	nodesIn := node.FindNodesIn(&physical_domain.Nodes, geometry.CreateRectangle(0, 0, .1, .1, 0, 2))
 
 	fmt.Printf("%v\n", nodesIn)
 
