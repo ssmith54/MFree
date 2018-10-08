@@ -213,6 +213,13 @@ func (domain *Domain) PrintNodesToImg(imagename string) {
 
 // dof ROUTINES
 
-func (domain *Domain) CreateDOF() {
+func (domain *Domain) CreateNodalDOFs() {
 
 }
+
+// materials
+
+func (domain *Domain) Add_material() {
+}
+
+// query operations

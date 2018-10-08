@@ -15,16 +15,19 @@
 package main
 
 import (
+	"Meshfree/coordinatesystem"
+	"Meshfree/dof"
 	"Meshfree/domain"
 	"Meshfree/geometry"
 	"Meshfree/node"
 	"Meshfree/scni"
 	"Meshfree/shapefunctions"
-	"fmt"
 )
 
 func main() {
 
+	// create a coordinate coordinate coordinate system
+	globalCS := coordinatesystem.CreateCartesian()
 	// Generate a domain, from a PLSG file and then generate clipped voronoi
 	//var physical_domain domain.Domain
 	physical_domain := new(domain.Domain)
@@ -32,14 +35,16 @@ func main() {
 	physical_domain.PrintNodesToImg("nodes")
 	physical_domain.GenerateClippedVoronoi()
 	physical_domain.GetVoronoi().PrintVoronoiToImg("outputs/cells.eps")
-	nodesIn := node.FindNodesIn(&physical_domain.Nodes, geometry.CreateRectangle(0, 0, .1, .1, 0, 2))
 
-	fmt.Printf("%v\n", nodesIn)
+	// create BC dof and then the rest
+	// find nodes on left side of beam (boundary conditions)
+	nodesEB1 := node.FindNodesIn(&physical_domain.Nodes, geometry.CreateRectangle(0, 2, 0, 0, 0.1, 0))
+	node.PrintNodes(nodesEB1)
+	// create degrees of freedom pertaining to the essential boundary nodes
+	overrideDOFs := true // whether to override preexisting dofs that match the node and direction
+	node.CreateNodalDofs(nodesEB1, globalCS.X, dof.DOF_FIXED, overrideDOFs)
 
-	// create boundary conditions
-
-	// find nodes on traction and displacement boundaries
-	// given a boundary, find nodes on boundary that are in a primative shape
+	// find nodes on right side of beam (traction)
 
 	// Meshfree structure
 

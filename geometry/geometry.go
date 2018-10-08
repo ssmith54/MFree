@@ -61,6 +61,10 @@ type Dir struct {
 	e3 float64
 }
 
+func CreateDir(e1, e2, e3 float64) *Dir {
+	return &(Dir{e1, e2, e3})
+}
+
 func (dir *Dir) isEqual(dir_1 *Dir) bool {
 	if dir.e1 == dir_1.e1 && dir.e2 == dir_1.e2 && dir.e3 == dir_1.e3 {
 		return true

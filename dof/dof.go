@@ -2,18 +2,18 @@ package dof
 
 import "Meshfree/geometry"
 
-type dof_fixture int
+type Dof_fixture int
 
 const (
-	dof_free       dof_fixture = 0
-	dof_fixed      dof_fixture = 1
-	dof_prescribed dof_fixture = 2
+	DOF_FREE       Dof_fixture = 0
+	DOF_FIXED      Dof_fixture = 1
+	DOF_PRESCIRBED Dof_fixture = 2
 )
 
 type DOF struct {
 	node_nr       int
 	global_dof_nr int
-	fix_type      dof_fixture
+	fix_type      Dof_fixture
 	dir           *geometry.Dir
 }
 
@@ -23,7 +23,7 @@ func (dof *DOF) Set_direction(dir *geometry.Dir) {
 }
 
 // set dof_type, e.g fixed free
-func (dof *DOF) Set_dof_type(dof_type dof_fixture) {
+func (dof *DOF) Set_dof_type(dof_type Dof_fixture) {
 	dof.fix_type = dof_type
 }
 

@@ -1,12 +1,18 @@
 package node
 
 import (
+	"Meshfree/dof"
 	"Meshfree/geometry"
+	"fmt"
 )
 
 type Node struct {
 	coords  geometry.Point
 	node_nr int
+}
+
+type NodeSet struct {
+	nodes *[]*Node
 }
 
 // Create a new node in the domain
@@ -29,14 +35,32 @@ func (node *Node) GetPoint() *geometry.Point {
 	return &node.coords
 }
 
-func FindNodesIn(nodes *[]Node, shape geometry.Shape) []Node {
-	n := make([]Node, 0)
-	for _, node := range *nodes {
+func FindNodesIn(nodes *[]Node, shape geometry.Shape) *[]*Node {
+	n := make([]*Node, 0)
+	for i, node := range *nodes {
 		isIn := shape.IsPointInside(node.GetPoint())
 
 		if isIn == true {
-			n = append(n, node)
+			n = append(n, &((*nodes)[i]))
 		}
 	}
-	return n
+	return &n
+}
+
+func CreateNodalDofs(nodes *[]*Node, dir *geometry.Dir, fix_type dof.Dof_fixture, overrideDOFS bool) {
+	for _, node := range *nodes {
+		node.CreateDOF()
+	}
+}
+
+func (node *Node) CreateDOF() {
+
+}
+
+func PrintNodes(nodes *[]*Node) {
+	fmt.Printf("Nodes:\n")
+	for _, node := range *nodes {
+		fmt.Printf("%v\n", *node)
+
+	}
 }
