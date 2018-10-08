@@ -61,6 +61,14 @@ type Dir struct {
 	e3 float64
 }
 
+func (dir *Dir) isEqual(dir_1 *Dir) bool {
+	if dir.e1 == dir_1.e1 && dir.e2 == dir_1.e2 && dir.e3 == dir_1.e3 {
+		return true
+	} else {
+		return false
+	}
+}
+
 type Vector struct {
 	e1 float64
 	e2 float64

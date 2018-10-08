@@ -210,3 +210,9 @@ func (domain *Domain) PrintNodesToImg(imagename string) {
 	}
 
 }
+
+// dof ROUTINES
+
+func (domain *Domain) CreateDOF() {
+
+}
