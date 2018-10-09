@@ -11,10 +11,15 @@ const (
 )
 
 type DOF struct {
-	node_nr       int
 	global_dof_nr int
 	fix_type      Dof_fixture
 	dir           *geometry.Dir
+}
+
+// constructor
+
+func NewDOF(nodenum int, dirs *geometry.Dir, dof_type Dof_fixture) DOF {
+	return DOF{nodenum, dof_type, dirs}
 }
 
 // set direction of degree of freedom
@@ -28,24 +33,24 @@ func (dof *DOF) Set_dof_type(dof_type Dof_fixture) {
 }
 
 // get direction
-func (dof *DOF) get_direction() *geometry.Dir {
+func (dof *DOF) Get_direction() *geometry.Dir {
 	return dof.dir
 }
 
 // get global dof number
-func (dof *DOF) get_global_dof() int {
+func (dof *DOF) Get_global_dof() int {
 	return dof.global_dof_nr
 }
 
 // set global dof number
-func (dof *DOF) set_global_dof(dof_nr int) {
+func (dof *DOF) Set_global_dof(dof_nr int) {
 	dof.global_dof_nr = dof_nr
 }
 
 /////////////////////////////////////
 // check what type of dof it is
 // free
-func (dof *DOF) is_free() bool {
+func (dof *DOF) Is_free() bool {
 	if dof.fix_type == 0 {
 		return true
 	} else {
@@ -54,7 +59,7 @@ func (dof *DOF) is_free() bool {
 }
 
 // fixed
-func (dof *DOF) is_fixed() bool {
+func (dof *DOF) Is_fixed() bool {
 	if dof.fix_type == 1 {
 		return true
 	} else {
@@ -63,7 +68,7 @@ func (dof *DOF) is_fixed() bool {
 }
 
 // prescribed
-func (dof *DOF) is_prescribed() bool {
+func (dof *DOF) Is_prescribed() bool {
 	if dof.fix_type == 2 {
 		return true
 	} else {

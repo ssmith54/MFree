@@ -26,34 +26,37 @@ import (
 
 func main() {
 
-	// create a coordinate coordinate coordinate system
+	// create a coordinate system
 	globalCS := coordinatesystem.CreateCartesian()
-	// Generate a domain, from a PLSG file and then generate clipped voronoi
-	//var physical_domain domain.Domain
-	physical_domain := new(domain.Domain)
-	physical_domain.TriGen("models/square", "pDa0.05")
-	physical_domain.PrintNodesToImg("nodes")
-	physical_domain.GenerateClippedVoronoi()
-	physical_domain.GetVoronoi().PrintVoronoiToImg("outputs/cells.eps")
+	// set dimension of the problem
+	DIM := 2
+	//Generate a domain, from a PLSG file
+	modelname := "Beam"
+	PLSG_file := "models/square"
+	mesh_options := "pDa0.05"
+	// creates the points and the voronoi diagram
+	domain_ := domain.NewDomain(modelname, PLSG_file, mesh_options, DIM, globalCS)
 
-	// create BC dof and then the rest
-	// find nodes on left side of beam (boundary conditions)
-	nodesEB1 := node.FindNodesIn(&physical_domain.Nodes, geometry.CreateRectangle(0, 2, 0, 0, 0.1, 0))
+	// modify dof for essential boundaries
+	nodesEB1 := node.FindNodesIn(&domain_.Nodes, geometry.CreateRectangle(0, 2, 0, 0, 0.1, 0))
 	node.PrintNodes(nodesEB1)
-	// create degrees of freedom pertaining to the essential boundary nodes
 	overrideDOFs := true // whether to override preexisting dofs that match the node and direction
-	node.CreateNodalDofs(nodesEB1, globalCS.X, dof.DOF_FIXED, overrideDOFs)
+	node.CreateNodalDofs(nodesEB1, globalCS.X, dof.DOF_FIXED, domain_.GetDim(), overrideDOFs)
+	node.CreateNodalDofs(nodesEB1, globalCS.Y, dof.DOF_FIXED, domain_.GetDim(), overrideDOFs)
+	domain_.GetNodesIn(geometry.CreateRectangle(0, 2, 0, 0, 0.1, 0))
+
+	// add material to the domain
+	domain_.Add_material()
 
 	// find nodes on right side of beam (traction)
 
 	// Meshfree structure
-
 	// refers to the domain
 	isConstantSpacing := true
 	isVariousPoints := false
 	dim := 2
 	tol := 1e-8
-	meshfree := shapefunctions.NewMeshfree(physical_domain, isConstantSpacing, isVariousPoints, dim, nil, tol)
+	meshfree := shapefunctions.NewMeshfree(domain_, isConstantSpacing, isVariousPoints, dim, nil, tol)
 	meshfree.SetConstantGamma(1.2)
 	meshfree.Set_basis_function_radii()
 	// p1 := geometry.NewPoint(0, 0, 0)
@@ -61,7 +64,7 @@ func main() {
 	// // compute shape functions at p
 	// meshfree.ComputeMeshfree(&p1, compute, false)
 
-	scni.CreateSCNI(meshfree, physical_domain.GetVoronoi())
+	scni.CreateSCNI(meshfree, domain_.GetVoronoi())
 
 	// set up stabalised conforming nodal integration SCNI
 	// each cell just has a Bmatrix (axi, Pstress,Pstrain, 3D), and a volume. Simple?

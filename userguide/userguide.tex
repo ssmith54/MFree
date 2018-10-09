@@ -1,20 +1,42 @@
-\documentclass[10pt,a4paper]{article}
-
-
+\documentclass[openany,oneside,12pt]{book}
+\usepackage{hyperref}
+\usepackage{amsmath}
 \usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-\usepackage[english]{isodate}
-\usepackage[parfill]{parskip}
+\usepackage{tcolorbox}
+\usepackage{listings}
+\usepackage{color}
+\lstset{
+	language=C,
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	numberstyle=\tiny\color{gray},
+	keywordstyle=\color{blue},
+	commentstyle=\color{dkgreen},
+	stringstyle=\color{red},
+	breaklines=true,
+	breakatwhitespace=true,
+	tabsize=3}
 
 
 
-\pagenumbering{Roman}
-
-\newpage
-\pagenumbering{arabic}
-
-
-
+\title{MFree: An Explicit Meshfree Code for Non-Linear Solid Mechanics \\ release 0.1}
+\date{2018 \\ October}
+\author{Stephen Smith \\ Queen's University Belfast}
+\raggedbottom
 \begin{document}
-	content...
+\frontmatter
+\maketitle
+\tableofcontents
+\mainmatter
+\include{Introduction}
+\include{Theory}
+\include {Design}
+\chapter{Usage}
+\section{Domain}	
+\chapter{Furture Plans}
+\chapter{Area of Improvements}	
 \end{document}

@@ -6,6 +6,9 @@ package domain
 //
 import "C"
 import (
+	"Meshfree/coordinatesystem"
+	"Meshfree/dof"
+	"Meshfree/geometry"
 	"Meshfree/node"
 	"Meshfree/voronoi"
 	"unsafe"
@@ -16,20 +19,49 @@ import (
 )
 
 type Domain struct {
+	Name          string
 	Nodes         []node.Node
 	num_nodes     int
 	voronoi       *voronoi.Voronoi
 	dim           int
 	boundaryNodes []int
+	global_basis  *[]*geometry.Dir
 }
 
 func (domain *Domain) GetDim() int {
 	return domain.dim
 }
 
+func (domain *Domain) SetCoordinateSystem(CSystem coordinatesystem.CoordinateSystem) {
+	domain.global_basis = CSystem.ReturnBasis(domain.dim)
+}
+
+func (domain *Domain) CreateDOFs(dof_type dof.Dof_fixture) {
+	for _, node := range domain.Nodes {
+		for k, dir := range *domain.global_basis {
+			dof_number := domain.dim*node.GetNodenNr() + k
+			node.CreateDOF(dir, dof_type, dof_number)
+
+		}
+	}
+}
+
 // Create a new domain
-func NewDomain(nodes []node.Node, numnodes int) Domain {
-	return Domain{nodes, numnodes, nil, 0, nil}
+func NewDomain(modelname string, fileName string, options string, dim_ int, globalCS coordinatesystem.CoordinateSystem) *Domain {
+	domain_ := new(Domain)
+	domain_.TriGen("models/square", "pDa0.05")
+	domain_.GenerateClippedVoronoi()
+	domain_.Name = modelname
+	// set corodinate system for the domain
+	domain_.SetCoordinateSystem(globalCS)
+	// set up degrees of freedom for the domain, assume all free to start with
+	domain_.CreateDOFs(dof.DOF_FREE)
+	// printing outputs
+	domain_.PrintNodesToImg("nodes")
+	domain_.GetVoronoi().PrintVoronoiToImg("outputs/cells.eps")
+
+	domain_.dim = dim_
+	return domain_
 }
 
 // add nodes to domain
@@ -45,11 +77,15 @@ func (domain *Domain) AddNodes(nodes ...*node.Node) int {
 func (domain *Domain) GetNumNodes() int {
 	return domain.num_nodes
 }
+func (domain *Domain) GetNodesIn(shape geometry.Shape) {
+	node.FindNodesIn(&domain.Nodes, shape)
 
-// Copy a domain
-func (domain *Domain) copyDomain() *Domain {
-	return &Domain{domain.Nodes, domain.num_nodes, nil, 0, nil}
 }
+
+// // Copy a domain
+// func (domain *Domain) copyDomain() *Domain {
+// 	return &Domain{domain.Nodes, domain.num_nodes, nil, 0, nil, nil}
+// }
 
 // update the domain based on the displacement
 func (domain *Domain) UpdateDomain() {
@@ -212,10 +248,6 @@ func (domain *Domain) PrintNodesToImg(imagename string) {
 }
 
 // dof ROUTINES
-
-func (domain *Domain) CreateNodalDOFs() {
-
-}
 
 // materials
 

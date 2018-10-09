@@ -1,0 +1,26 @@
+\chapter{Theory}		
+In order to understand how to use the library it is necessary to have an appreciation of the theory behind the application of meshfree methods to non-linear solid mechanics. This chapter explains the fundamental ideas of meshfree methods, and discretization of a continous problem in a discrete, and numerically solvable one. 
+\section{Meshfree methods}
+Meshfree methods were developed in the middle of the 1990's to overcome difficulties associated with the finite element method. The fundamental problem in meshfree or finite elements is to provide a set of approximation function (subject to a set of constraints) that can be used as an approximation space for the trial and test functions in the weak form of a partial different equation.  To illustrate this problem, consider the balance of linear momentum, cast in a Lagrangian(reference) form Eq. (\ref{Balance of linear momentum}). The intention in this manuscript is to use capital symbols to describe material coordinates, however often irregularities will exist between this intention and the result. 
+\begin{equation}\label{Balance of linear momentum}
+GRAD ~ P_{iJ} = \rho_0 \ddot{u_i}
+\end{equation}
+where $P$ is the first Piola-Kirchoff stress, $\rho_0$ the material density in the reference frame (typically $t=0$) and $\ddot{u}$ the acceleration. To complete the balance of linear moemntum boundary conditions must be specified. A boundary is called a displacemnt boundary, denoted $\Gamma_u$, if a displacement $u$ is prescribed on that boundary, likewise a similar defintion is present for the traction boundary, denoted $\Gamma_t$ The boundary conditions for Eq. (2.1) are typically given as:
+\begin{equation}
+u=\bar{u} ~~on ~~\Gamma_u
+\end{equation}
+\begin{equation}
+P_{ij}N_j = \bar{t_i} ~~on ~~\Gamma_t
+\end{equation}
+Equation 2, subject to the boundary conditions (2.2,2.3) is often termed the strong form 
+
+\begin{tcolorbox}
+\textbf{Strong form of the momentum balance}
+\begin{align*}
+GRAD ~ P_{iJ} &= \rho_0 \ddot{u_i} &\text{Momentum Balance} \\
+u&=\bar{u} ~~on ~~\Gamma_u &\text{Displacement condition} \\
+P_{ij}N_j &= \bar{t_i} ~~on ~~\Gamma_t &\text{Traction condition}
+\end{align*}
+\end{tcolorbox}
+
+\subsection*{Strong form to weak form }
