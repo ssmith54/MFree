@@ -3,9 +3,9 @@
 \contentsline {section}{\numberline {1.2}Overview}{1}{section.1.2}
 \contentsline {chapter}{\numberline {2}Theory}{2}{chapter.2}
 \contentsline {section}{\numberline {2.1}Meshfree methods}{2}{section.2.1}
-\contentsline {chapter}{\numberline {3}Design}{4}{chapter.3}
-\contentsline {section}{\numberline {3.1}Domain}{4}{section.3.1}
-\contentsline {chapter}{\numberline {4}Usage}{5}{chapter.4}
-\contentsline {section}{\numberline {4.1}Domain}{5}{section.4.1}
-\contentsline {chapter}{\numberline {5}Furture Plans}{6}{chapter.5}
-\contentsline {chapter}{\numberline {6}Area of Improvements}{7}{chapter.6}
+\contentsline {section}{\numberline {2.2}Constitutive Modelling}{6}{section.2.2}
+\contentsline {chapter}{\numberline {3}Design}{7}{chapter.3}
+\contentsline {section}{\numberline {3.1}Domain}{7}{section.3.1}
+\contentsline {chapter}{\numberline {4}Furture Plans}{9}{chapter.4}
+\contentsline {chapter}{\numberline {5}Area of Improvements}{10}{chapter.5}
+\contentsline {chapter}{\numberline {6}Acknowledgements}{11}{chapter.6}
