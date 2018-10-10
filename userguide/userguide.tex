@@ -4,9 +4,10 @@
 \usepackage[utf8]{inputenc}
 \usepackage{tcolorbox}
 \usepackage{listings}
+\usepackage{listings-golang} % import this package after listings
 \usepackage{color}
 \lstset{
-	language=C,
+	language=Golang,
 	aboveskip=3mm,
 	belowskip=3mm,
 	showstringspaces=false,
@@ -15,14 +16,11 @@
 	numbers=none,
 	numberstyle=\tiny\color{gray},
 	keywordstyle=\color{blue},
-	commentstyle=\color{dkgreen},
+	commentstyle=\color{red},
 	stringstyle=\color{red},
 	breaklines=true,
 	breakatwhitespace=true,
 	tabsize=3}
-
-
-
 \title{MFree: An Explicit Meshfree Code for Non-Linear Solid Mechanics \\ release 0.1}
 \date{2018 \\ October}
 \author{Stephen Smith \\ Queen's University Belfast}

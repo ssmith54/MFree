@@ -51,7 +51,7 @@ In a similar manner the functions space for the trial functions $u(X,t)$ can be 
 Combining these definitions with the principle of virtual work above leads to the complete problem, given by:
 \begin{tcolorbox}
 	\textbf{Principle of virtual work (Weak form)}
-	Find the trial functions u(X,t) such that for any admissible (member of $\mathcal{U}_0$) virtual displacement $\delta u$ the virtual work $\delta W $ is zero.
+	Find the trial functions $u(X,t)$ such that for any admissible (member of $\mathcal{U}_0$) virtual displacement $\delta u$ the virtual work $\delta W $ is zero.
 	\begin{equation*}
 	\delta W = \delta W^{int} - \delta W^{ext} + \delta W^{kin} 
 	\end{equation*}
@@ -104,13 +104,20 @@ u^h(x) = \sum_i^n C_i(x) \Gamma_i(x)
 
 \subsubsection*{Probabilistic Approach}
 The approach above for developing meshfree shape functions leads to one drawback, the shape functions no longer interpolate data, which presents problems in implementing boundary conditions. In order to fix this issue a probablistic approach to mesh-free shape functions was developed by Ortiz \cite{}, known as the MAXENT scheme. In this approach the problem is: \emph{Given a of mutally independent discrete events $e_1,e_2,...,e_n$, that occur with probabilities $p_1,p_2,...,p_n$}
-
 \begin{tcolorbox}
 \textbf{MAXENT Construction:}
-Minimise the convex potential functions $F(\lambda_1,\lambda_2) = log(\sum_I e^{-\lambda_1 \tilde{x}_i - \lambda_2 \tilde{y}_i})$ Method: Assume that the solution $\lambda^k$ at the $kth$ iteration is given, then the minimisation problem can be expanded using a taylor series
+Goal: Minimise the convex potential function $F(\lambda_1,\lambda_2) = log(\sum_I e^{-\lambda_1 \tilde{x}_i - \lambda_2 \tilde{y}_i})$. Method: Assume that the solution $\lambda^k$ at the $kth$ iteration is given, then the minimisation problem can be expanded using a Taylor series
 \begin{equation*}
-0 = \mathcal{R}(\lambda^k) + \nabla \nabla F(x) \Delta \lambda^k
+F(\lambda^k+\Delta \lambda^k) = \mathcal{R}(\lambda^k) + \nabla \nabla F(x) \Delta \lambda^k = 0
 \end{equation*}
-Which is a Newton-Raphson scheme, shown pictorially in figure 2.
+where $\mathcal{R}$ is the residual at the $kth$ iteration:
+\begin{equation*}
+\mathcal{R} = \nabla F(\lambda_1^k,\lambda_2^k) > 0 
+\end{equation*}
+The increment $\Delta \lambda^K$ at the $kth$ iteration is given by:
+\begin{equation*}
+\Delta \lambda^k = -\mathcal{H}^{-1} \nabla F
+\end{equation*}
+Eqs Newton-Raphson scheme, shown pictorially in figure 2.
 \end{tcolorbox}
 \section{Constitutive Modelling}

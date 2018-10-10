@@ -14,12 +14,13 @@ type DOF struct {
 	global_dof_nr int
 	fix_type      Dof_fixture
 	dir           *geometry.Dir
+	value         float64
 }
 
 // constructor
 
 func NewDOF(nodenum int, dirs *geometry.Dir, dof_type Dof_fixture) DOF {
-	return DOF{nodenum, dof_type, dirs}
+	return DOF{nodenum, dof_type, dirs, 0}
 }
 
 // set direction of degree of freedom

@@ -55,10 +55,25 @@ func FindNodesIn(nodes *[]Node, shape geometry.Shape) *[]*Node {
 	}
 	return &n
 }
-
-func CreateNodalDofs(nodes *[]*Node, dir *geometry.Dir, fix_type dof.Dof_fixture, dim int, overrideDOFS bool) {
+func (node *Node) get_dof(dir *geometry.Dir) *dof.DOF {
+	for _, dof := range *node.dofs {
+		if dof.Get_direction().Is_Equal(dir) == true {
+			return &dof
+		}
+	}
+	return nil
+}
+func SetNodalDofs(nodes *[]*Node, dir *geometry.Dir, fix_type dof.Dof_fixture, dim int) {
 	for _, node := range *nodes {
-		node.CreateDOF(dir, fix_type, dim)
+		dof := node.get_dof(dir)
+		// check if dof already existed
+		// if not create it
+		if dof == nil {
+			node.CreateDOF(dir, fix_type, dim)
+			// else modify existing one
+		} else {
+			dof.Set_dof_type(fix_type)
+		}
 	}
 }
 
@@ -73,3 +88,5 @@ func PrintNodes(nodes *[]*Node) {
 
 	}
 }
+
+// used in incremental analysis

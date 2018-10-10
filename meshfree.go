@@ -40,9 +40,8 @@ func main() {
 	// modify dof for essential boundaries
 	nodesEB1 := node.FindNodesIn(&domain_.Nodes, geometry.CreateRectangle(0, 2, 0, 0, 0.1, 0))
 	node.PrintNodes(nodesEB1)
-	overrideDOFs := true // whether to override preexisting dofs that match the node and direction
-	node.CreateNodalDofs(nodesEB1, globalCS.X, dof.DOF_FIXED, domain_.GetDim(), overrideDOFs)
-	node.CreateNodalDofs(nodesEB1, globalCS.Y, dof.DOF_FIXED, domain_.GetDim(), overrideDOFs)
+	node.SetNodalDofs(nodesEB1, globalCS.X, dof.DOF_FIXED, domain_.GetDim())
+	node.SetNodalDofs(nodesEB1, globalCS.Y, dof.DOF_FIXED, domain_.GetDim())
 	domain_.GetNodesIn(geometry.CreateRectangle(0, 2, 0, 0, 0.1, 0))
 
 	// add material to the domain

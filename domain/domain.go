@@ -65,12 +65,11 @@ func NewDomain(modelname string, fileName string, options string, dim_ int, glob
 }
 
 // add nodes to domain
-func (domain *Domain) AddNodes(nodes ...*node.Node) int {
+func (domain *Domain) AddNodes(nodes ...*node.Node) {
 	for _, nodes := range nodes {
 		domain.Nodes = append(domain.Nodes, *nodes)
 		domain.num_nodes = domain.num_nodes + 1
 	}
-	return 1
 }
 
 // Get number of nodes

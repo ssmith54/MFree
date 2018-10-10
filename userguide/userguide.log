@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.10.25)  9 OCT 2018 17:16
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.10.25)  10 OCT 2018 10:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -818,32 +818,27 @@ File: listings.cfg 2015/06/04 1.6 listings configuration
 ))
 Package: listings 2015/06/04 1.6 (Carsten Heinz)
 
-(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
-File: lstlang1.sty 2015/06/04 1.6 listings language file
-)
-(/usr/share/texlive/texmf-dist/tex/latex/listings/lstmisc.sty
-File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
-) (./userguide.aux (./Introduction.aux) (./Theory.aux) (./Design.aux))
+(./listings-golang.sty) (./userguide.aux (./Introduction.aux) (./Theory.aux)
+(./Design.aux))
 \openout1 = `userguide.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 30.
-LaTeX Font Info:    ... okay on input line 30.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 30.
-LaTeX Font Info:    ... okay on input line 30.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 30.
-LaTeX Font Info:    ... okay on input line 30.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 30.
-LaTeX Font Info:    ... okay on input line 30.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 30.
-LaTeX Font Info:    ... okay on input line 30.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 30.
-LaTeX Font Info:    ... okay on input line 30.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 30.
-LaTeX Font Info:    ... okay on input line 30.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
 \AtBeginShipoutBox=\box45
-Package hyperref Info: Link coloring OFF on input line 30.
-
-(/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
+Package hyperref Info: Link coloring OFF on input line 28.
+ (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 
 (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
@@ -851,9 +846,9 @@ Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
 \c@section@level=\count133
 )
-LaTeX Info: Redefining \ref on input line 30.
-LaTeX Info: Redefining \pageref on input line 30.
-LaTeX Info: Redefining \nameref on input line 30.
+LaTeX Info: Redefining \ref on input line 28.
+LaTeX Info: Redefining \pageref on input line 28.
+LaTeX Info: Redefining \nameref on input line 28.
 
 (./userguide.out) (./userguide.out)
 \@outlinefile=\write6
@@ -902,7 +897,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.i}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.34 \mainmatter
+l.32 \mainmatter
                  [1
 
 ]
@@ -932,37 +927,37 @@ Chapter 3.
 
 
 
-]) [8]
+] [8]) [9]
 Chapter 4.
-[9
+[10
 
 
 ]
 Chapter 5.
-[10
-
-]
-Chapter 6.
 [11
 
 ]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 43.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 43.
+Chapter 6.
+[12
+
+]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 41.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 41.
  (./userguide.aux (./Introduction.aux) (./Theory.aux) (./Design.aux))
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 43.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 43.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 41.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 41.
 Package rerunfilecheck Info: File `userguide.out' has not changed.
 (rerunfilecheck)             Checksum: CC72BA3EFDE10E993AF10B1454A82F51;572.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 43.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 41.
  ) 
 Here is how much of TeX's memory you used:
- 17087 strings out of 493029
- 305471 string characters out of 6136233
- 399891 words of memory out of 5000000
- 20298 multiletter control sequences out of 15000+600000
+ 17148 strings out of 493029
+ 306151 string characters out of 6136233
+ 389017 words of memory out of 5000000
+ 20327 multiletter control sequences out of 15000+600000
  11875 words of font info for 43 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 54i,14n,73p,949b,1309s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 54i,14n,73p,949b,1369s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texl
@@ -977,10 +972,10 @@ m/cmsl12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/
 share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/
 texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on userguide.pdf (13 pages, 186483 bytes).
+Output written on userguide.pdf (14 pages, 192949 bytes).
 PDF statistics:
- 223 PDF objects out of 1000 (max. 8388607)
- 191 compressed objects within 2 object streams
- 50 named destinations out of 1000 (max. 500000)
+ 269 PDF objects out of 1000 (max. 8388607)
+ 235 compressed objects within 3 object streams
+ 85 named destinations out of 1000 (max. 500000)
  101 words of extra memory for PDF output out of 10000 (max. 10000000)
 
