@@ -1,3 +1,5 @@
+
+
 \chapter{Theory}		
 In order to understand how to use the library it is necessary to have an appreciation of the theory behind the application of meshfree methods to non-linear solid mechanics. This chapter explains the fundamental ideas of meshfree methods, and discretization of a continous problem in a discrete, and numerically solvable one. 
 \section{Meshfree methods}
@@ -103,7 +105,7 @@ u^h(x) = \sum_i^n C_i(x) \Gamma_i(x)
 
 
 \subsubsection*{Probabilistic Approach}
-The approach above for developing meshfree shape functions leads to one drawback, the shape functions no longer interpolate data, which presents problems in implementing boundary conditions. In order to fix this issue a probablistic approach to mesh-free shape functions was developed by Ortiz \cite{}, known as the MAXENT scheme. In this approach the problem is: \emph{Given a of mutally independent discrete events $e_1,e_2,...,e_n$, that occur with probabilities $p_1,p_2,...,p_n$}
+The approach above for developing meshfree shape functions leads to one drawback, the shape functions no longer interpolate data, which presents problems in implementing boundary conditions. In order to fix this issue a probablistic approach to mesh-free shape functions was developed by Ortiz \cite{}, known as the MAXENT scheme. The principle behind the MAXENT scheme is that if the informational entropgy, denoted H, is maximising probability distribution will be the least-biased one. In this approach the problem is: \emph{Given a of mutally independent discrete events $e_1,e_2,...,e_n$, that occur with probabilities $p_1,p_2,...,p_n$}
 \begin{tcolorbox}
 \textbf{MAXENT Construction:}
 Goal: Minimise the convex potential function $F(\lambda_1,\lambda_2) = log(\sum_I e^{-\lambda_1 \tilde{x}_i - \lambda_2 \tilde{y}_i})$. Method: Assume that the solution $\lambda^k$ at the $kth$ iteration is given, then the minimisation problem can be expanded using a Taylor series
@@ -118,6 +120,37 @@ The increment $\Delta \lambda^K$ at the $kth$ iteration is given by:
 \begin{equation*}
 \Delta \lambda^k = -\mathcal{H}^{-1} \nabla F
 \end{equation*}
-Eqs Newton-Raphson scheme, shown pictorially in figure 2.
+Where $\mathcal{H}$ is the Hessian matrix $(\mathcal{H}:=\nabla^2 F)$. After convergence is reached, subject to a tolerance, the shape functions are given by:
+\begin{equation}
+\phi_i = \frac{e^{\lambda_1 x_i - \lambda_2 y_i}}{\sum_{j=1}^ne^{\lambda_1 x_j - \lambda_2 y_j}} 
+\end{equation}
+Eqs (2-3) describe a Newton-Raphson scheme.
 \end{tcolorbox}
 \section{Constitutive Modelling}
+An essential stage in the solution of the virtual work expression, Box 2, is to relate the trial displacement field $u(X,t)$ to the stresses. This is made possible through the use of a constitutive equation. The simplest form of a constitutive law for large strain is the St Venant-Kirchoff law, which is linear in the strain measure (but not the displacements due to the non-linear relationship between the strains and the displacements), represented by the equation:
+\begin{equation}
+S_{IJ} = \lambda E_{KK}\delta_{KK} \delta_{IJ} + 2\mu E_{IJ}
+\end{equation}
+Materials such as this one are part of a general class of materials known as hyper-elastic materials, where the constitutive law is given in terms of a strain energy density function $\Psi$. For example, the strain energy density function for the St. Venant Kirchoff material is given by:
+\begin{equation}
+\psi(E_{IJ}) = \frac{\lambda}{2}\big[E_{IJ} : \delta_{MN} \big]
+\end{equation}
+In general the strain energy density function for isotropic hyperelastic models is defined in terms of the invariants of the right Cauchy-Green tensor $C$, given by
+\begin{align*}
+I_1 &= \\
+I_2 &= \\
+I_3 &= \\
+\end{align*}
+The routine for defining, or using a hyperelastic is as follows
+\begin{tcolorbox}
+\textbf{Hyperelastic Material:}
+Given a functional relationship between the strain energy density function, and the invaraints $I_1,I_2,I_3$ of the right-Caucy deformation tensor, the Cauchy stress can be obtained from the following:
+\begin{equation}
+\sigma = \frac{2}{J}\bigg(\frac{\partial \Psi}{\partial I_1}\bigg)
+\end{equation}
+
+\end{tcolorbox}
+
+
+
+
