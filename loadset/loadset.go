@@ -32,6 +32,13 @@ func CreatePressureLoad() *Pressure_load {
 	return &(Pressure_load{})
 }
 
+func (nodal_load *Nodal_load) get_load_vector() {
+
+}
+func (pressure_load *Pressure_load) get_load_vector() {
+
+}
+
 func CreateNodalLoad(nodes_in *[]*node.Node, load_dir_in *geometry.Dir, magnitude_in float64) *Nodal_load {
 	return &(Nodal_load{nodes: nodes_in, load_dir: load_dir_in, magnitude: magnitude_in})
 }

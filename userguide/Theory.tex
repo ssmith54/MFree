@@ -96,18 +96,57 @@ which clearly satisfies the first condition (constant reproduction) as
 \begin{equation}
 \sum_i \phi_i = \frac{\sum_i^n\omega_a (x; x-x_i)}{\sum_j^n \omega_a(x;x-x_j)} = 1
 \end{equation}
-However, in order to satisfy the linear reproducing conditions an additional enrichment term is required. Consider the general form of the meshfree aporixmation given by 
+However, in order to satisfy the linear reproducing conditions an additional enrichment term is required. This is typically ahcieved by introducing a monomial basis terms into the approximation, yieding a general form of meshfree shape functions
 \begin{equation}
 u^h(x) = \sum_i^n C_i(x) \Gamma_i(x)
 \end{equation}
-.........
-
-
-
+where $\omega$ is a weight function, and $C_I$ corrective terms, which meet the reproducing conditions. 
+However, in order to satisfy the linear reproducing conditions an additional enrichment term is required. Consider the general form of the meshfree aporixmation given by 
+However, in order to satisfy the linear reproducing conditions an additional enrichment term is required. Consider the general form of the meshfree aporixmation given by 
+However, in order to satisfy the linear reproducing conditions an additional enrichment term is required. Consider the general form of the meshfree aporixmation given by 
 \subsubsection*{Probabilistic Approach}
-The approach above for developing meshfree shape functions leads to one drawback, the shape functions no longer interpolate data, which presents problems in implementing boundary conditions. In order to fix this issue a probablistic approach to mesh-free shape functions was developed by Ortiz \cite{}, known as the MAXENT scheme. The principle behind the MAXENT scheme is that if the informational entropgy, denoted H, is maximising probability distribution will be the least-biased one. In this approach the problem is: \emph{Given a of mutally independent discrete events $e_1,e_2,...,e_n$, that occur with probabilities $p_1,p_2,...,p_n$}
+The approach above for developing meshfree shape functions leads to one drawback, the shape functions no longer interpolate data, which presents problems in implementing boundary conditions. In order to fix this issue a probablistic approach to mesh-free shape functions was developed by Ortiz \cite{}, known as the MAXENT scheme. In this approach we consider the shape function approximation form $u^h(x) = \phi_I u_I$ and associate the shape function with a probability, we interpret the shape functions $\phi_I$ as \emph{the probability $p_I$ to which point $I$ influences $x$}, then the shape function approximation gives the expected value $\sum \phi_I u_I = \mathcal{E}(u)$. In order to find the probablity distrubitoon ( or shape functions) the principle of maximum entropy is used, which states for a given probability distribution $\phi_i$ with $\sum_i \phi_i = 1$ then the least biased distribution is the one that maximises information entropy is given by 
 \begin{tcolorbox}
-\textbf{MAXENT Construction:}
+\textbf{Principle of maximum entropy (MAXENT):}
+\begin{equation*}
+\max_{\phi_I} ~~H(\phi_i) = - \sum_i \phi_i log(\phi_i)
+\end{equation*}
+\end{tcolorbox}
+\noindent subject to the reproducing constraints (in 2D):
+\begin{equation*}
+\sum_I \phi_I = 1, ~~~~\sum_I \phi_I x_{Ik} = x_k, 
+\end{equation*}
+The constaints are added to the MAXENT principle uisng Lagrange multipliers, which produces the following Lagrangian:
+\begin{equation}
+\delta ~\bigg[\sum_I -\phi_I log \phi_I + \lambda_0 ( 1- \sum_I \phi_i)+ \lambda_k ( x_k- \sum \phi_I x_{Ik})\bigg]  = \mathbf{0}
+\end{equation}
+simplifying 2.14 and using the relation $ \lambda_0 = log(Z) - 1$ yields the following:
+\begin{equation}
+\phi_I = \frac{e^{-( \lambda_k x_{Ik})    }}{Z}, ~~~ Z(\lambda_k) = \sum_I e^{-( \lambda_k x_{Ik})    }
+\end{equation}
+subject to the $k$ constraints:
+\begin{equation}
+f_k(\lambda_k) = \frac{\sum e^{-( \lambda_k x_{Ik})    }}{Z} - x_k ~~ \text{for} ~k = (1,...,nd)
+\end{equation}
+For numerical reasons (give some?) introducing the shifted coordinates $\tilde{x_{Ik}} = x_{Ik} - x_k$ is advantageus as it casts the maximisation into the dual problem of minimization. In the shifted coordinates the $k$ constraints are:
+\begin{equation}
+\sum_I \phi_I \tilde{x}_{kI} = 0
+\end{equation} 
+and $\phi$ and $\tilde{Z}$
+\begin{equation}
+\phi_I = \frac{e^{-(\lambda_k \tilde{x}_{Ik})}}{\tilde{Z}}, ~~~~ \tilde{Z} = \sum_I e^{-(\lambda_k \tilde{x}_{Ik})}
+\end{equation}
+Substitution of Eqs 2.18 into the MAXENT principle yields:
+\begin{equation}
+H_{max} = log(\tilde{Z})
+\end{equation}
+subject to the constraints
+\begin{equation}
+\frac{\partial log(\tilde{Z)}}{\partial \lambda_k} = 0
+\end{equation}
+Hence, the solution to this problem is as follows: \emph{Find the set of Lagrange multipliers ($\lambda_k$) that minimise the convex potential function $F(\lambda_k) = H_{max}$}. This problem is solved iteratively using schemes such as \textit{steepest-descent method} or \textit{Newton-Raphson} methods. 
+\begin{tcolorbox}
+\textbf{MAXENT Construction in 2D:}
 Goal: Minimise the convex potential function $F(\lambda_1,\lambda_2) = log(\sum_I e^{-\lambda_1 \tilde{x}_i - \lambda_2 \tilde{y}_i})$. Method: Assume that the solution $\lambda^k$ at the $kth$ iteration is given, then the minimisation problem can be expanded using a Taylor series
 \begin{equation*}
 F(\lambda^k+\Delta \lambda^k) = \mathcal{R}(\lambda^k) + \nabla \nabla F(x) \Delta \lambda^k = 0
@@ -122,10 +161,78 @@ The increment $\Delta \lambda^K$ at the $kth$ iteration is given by:
 \end{equation*}
 Where $\mathcal{H}$ is the Hessian matrix $(\mathcal{H}:=\nabla^2 F)$. After convergence is reached, subject to a tolerance, the shape functions are given by:
 \begin{equation}
-\phi_i = \frac{e^{\lambda_1 x_i - \lambda_2 y_i}}{\sum_{j=1}^ne^{\lambda_1 x_j - \lambda_2 y_j}} 
+\phi_i = \frac{e^{\lambda_1 x_i - \lambda_2 y_i}}{\sum_{j=1}^ne^{\lambda_1 x_j - \lambda_2 y_j} } 
 \end{equation}
 Eqs (2-3) describe a Newton-Raphson scheme.
 \end{tcolorbox}
+
+\subsection*{Discrete Equations}
+To form the discrete equations used in the meshfree simulation we now subsitute the shape function approximation of the displacement eq. (5) into the virtual work expression, Box 2. As this is a Galerkin method the same basis functions are used for the trial and test functions, such that:
+\begin{equation}
+u_i^h = \sum_I \phi_I u_{Ii} , ~~~ \delta u_i = \sum_I \phi_I \delta u_{Ii}
+\end{equation}
+Considering the virtual work expression evaluated at a point $X_L$, Fig 3. The $n$ nodes that influence of the point x is given by the set:
+\begin{equation}
+\mathcal{I}_L = \{x_I : w(x-X_I) > 0 \}
+\end{equation}
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+	\draw (-3,-3) -- (3,-3) -- (3,3) -- (-3,3) -- (-3,-3);
+	\begin{scope}
+	\clip (-3,-3) rectangle +(6,6);
+	\pgfmathsetseed{24122015}
+	\foreach \p in {1,...,100}
+	{ \fill (5*rand,5*rand) circle (0.05);
+	}
+	\end{scope}
+	\draw[dashed,fill=white] (-1,-1) -- (1,-1) -- (1,1) -- (-1,1) -- (-1,-1);
+		\pgfmathsetseed{241210101}
+	\foreach \p in {1,...,15}
+	{ \fill[red] (1*rand,1*rand) circle (0.05);
+		}
+	\fill[black] (0,0) circle(0.05) node[right] {$X_L$};
+	\fill[red] (-3,4) circle (0.05) node (m1) [label={[black]right:\small{set of nodes $\mathcal{I}_L$}}] {};
+
+	\end{tikzpicture}	
+	\caption{Virtual work at a point $X_L$}
+\end{figure}
+\noindent And therefore the displacement given by:
+\begin{equation}
+u_i(x_L) = \sum_I \phi_I(X_L) u_{Ii} ~~~ \text{for}~I \in \mathcal{I}_L 
+\end{equation}
+or given by the k vector equations
+\begin{equation}
+{u_K(X_L)} = \mathbf{\Phi}^T\mathbf{u}_k =  <\phi_I,...,\phi_N>\cdot <u_{1k},...,u_{Nk}>^T
+\end{equation}
+where $\text{len}(\mathbf{u}) =  card(\mathcal{I}_L)$. The derivatives of u can be developed in a similar manner
+\begin{equation}
+\frac{\partial u_k(X_L) }{\partial X_J} = \Phi_{,J}^T u_k = \mathbf{g}^T_J \mathbf{u}_k
+\end{equation}
+The first term of the internal virtual work ($GRAD ~\delta u$) can hence be evaluated as 
+\begin{equation}
+(GRAD~ \delta u)_{kJ} = \frac{\partial \delta u_k}{\partial  X_J} = \begin{bmatrix}
+\mathbf{g}_1^T \mathbf{u}_1       & \mathbf{g}_2^T \mathbf{u}_1 & \mathbf{g}_3^T \mathbf{u}_1   \\
+\mathbf{g}_1^T \mathbf{u}_2       & \mathbf{g}_2^T \mathbf{u}_2 & \mathbf{g}_3^T \mathbf{u}_2     \\
+\mathbf{g}_1^T \mathbf{u}_3       & \mathbf{g}_2^T \mathbf{u}_3 & \mathbf{g}_3^T \mathbf{u}_3
+\end{bmatrix}
+\end{equation}
+
+\begin{tcolorbox}
+\textbf{Voigt Notation:}
+\begin{align}
+\{F\} &= Voigt\bigg(\begin{bmatrix}
+F_{11} &F_{12} &F_{13} \\
+F_{21} &F_{22} &F_{23} \\
+F_{31} &F_{32} &F_{33} 
+\end{bmatrix}\bigg) \\
+&= <F_{11},F_{11},F_{11},F_{11},F_{11},F_{11}>^T
+\end{align}
+\end{tcolorbox}
+
+
+
 \section{Constitutive Modelling}
 An essential stage in the solution of the virtual work expression, Box 2, is to relate the trial displacement field $u(X,t)$ to the stresses. This is made possible through the use of a constitutive equation. The simplest form of a constitutive law for large strain is the St Venant-Kirchoff law, which is linear in the strain measure (but not the displacements due to the non-linear relationship between the strains and the displacements), represented by the equation:
 \begin{equation}
@@ -135,22 +242,111 @@ Materials such as this one are part of a general class of materials known as hyp
 \begin{equation}
 \psi(E_{IJ}) = \frac{\lambda}{2}\big[E_{IJ} : \delta_{MN} \big]
 \end{equation}
-In general the strain energy density function for isotropic hyperelastic models is defined in terms of the invariants of the right Cauchy-Green tensor $C$, given by
+In general the strain energy density function for isotropic hyper-elastic models is defined in terms of the invariants of the right Cauchy-Green tensor $C$, given by
 \begin{align*}
-I_1 &= \\
-I_2 &= \\
-I_3 &= \\
+I_1 &= tr(C) \\
+I_2 &= (tr(C))^2 - tr(C^2)\\
+I_3 &= det(F)\\
 \end{align*}
-The routine for defining, or using a hyperelastic is as follows
+The routine for defining, or using a hyper-elastic is as follows
 \begin{tcolorbox}
 \textbf{Hyperelastic Material:}
-Given a functional relationship between the strain energy density function, and the invaraints $I_1,I_2,I_3$ of the right-Caucy deformation tensor, the Cauchy stress can be obtained from the following:
+Given a functional relationship between the strain energy density function, and the invariants $I_1,I_2,I_3$ of the right-Cauchy deformation tensor, the Cauchy stress can be obtained from the following:
 \begin{equation}
 \sigma = \frac{2}{J}\bigg(\frac{\partial \Psi}{\partial I_1}\bigg)
 \end{equation}
 
 \end{tcolorbox}
 
+
+\section{Integration}
+In order to solve the virtual work expression integration is required, in order to achieve this in the finite element method Gauss integration is typically used. However, the application of the Gauss integration to meshfree methods leads to poor performance, due the fact that meshfree shape functions are not polynomials, and also have an arbitrary supports, which does not necessarily align with the integration structure. In response to this different integration schemes have been proposed, such as support integration, stress point nodal integration and corrected gauss integration. In this library stabilised nodal integration is used, which ensures that the first order reproducing conditions of the shape functions are met, Box 3. This condition imposes a restriction on the integration scheme, which can be shown by considering a linear patch test, Fig 2,
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+	\draw (-3,-3) -- (3,-3) -- (3,3) -- (-3,3) -- (-3,-3);
+	\begin{scope}
+	\clip (-3,-3) rectangle +(6,6);
+	\pgfmathsetseed{24122015}
+	\foreach \p in {1,...,50}
+	{ \fill (5*rand,5*rand) circle (0.05);
+	}
+	\end{scope}
+	% nodes on boundary
+	\fill[red] (3,-3) circle (0.05);
+	\fill[red] (3,0) circle (0.05);
+	\fill[red] (3,3) circle (0.05);
+	\fill[red] (3,3) circle (0.05);
+	\fill[red] (0,-3) circle (0.05);
+	\fill[red] (-3,-3) circle (0.05);
+	\fill[red] (-3,3) circle (0.05);
+	\fill[red] (0,3) circle (0.05);
+	\fill[red] (-3,-3) circle (0.05);
+	\fill[red] (-3,0) circle (0.05);
+	\fill[red] (-3,3) circle (0.05) ;
+	
+	
+	\fill[red] (-3,5) circle (0.05) node (m1) [label={[black]right:\small{prescribed displacement node}}] {};
+	\fill[black] (-3,4) circle (0.05) node (m1) [label={[black]right:\small{free node}}] {};
+	\end{tikzpicture}	
+	\caption{Patch Test }
+\end{figure}
+where a linear displacement field  is prescribed on the displacement boundary $\Gamma_u$, given by:
+
+
+\begin{equation}
+u_{iI} = a_{i0} + a_{ij}x_{jI} ~~ \text{for I on } \Gamma_u
+\end{equation}
+In order to satisfy the patch test, the meshfree solution should be given by a linear polynomial $u_i = a_{i0} + a_{ij}x_j$, and hence the strains by:
+\begin{align*}
+\epsilon_x &= u_{x,x} = a_{x1} \\
+\epsilon_y &= u_{x,x} = a_{y2} \\
+2\epsilon_{xy} &= u_{x,y} + u_{y,x} = a_{x2} + a_{y1} 
+\end{align*}
+which are constant throughout the domain, hence the stress $\sigma^c$ is also constant. Considering the small-strain virtual work expression (equivalent to the except the use of the small strain tensor $\epsilon := sym(\nabla u)$, and Cauchy stress $\sigma$), the virtual work is given by:
+\begin{equation}
+content...
+\end{equation}
+\begin{figure} 
+	\centering 
+	\begin{tikzpicture}[dot/.style={circle,inner sep=1pt,fill,label={#1},name=#1},
+	extended line/.style={shorten >=-#1,shorten <=-#1},
+	extended line/.default=1cm,
+	one end extended/.style={shorten >=-#1},
+	one end extended/.default=1cm,
+	]
+	\draw [extended line=1.5cm] (0,0) -- (2.62,1.90);
+	\draw [extended line=1.5cm] (-0.62,1.90) -- (2,0);
+	\draw (1,3.08) -- (1,4.58);
+	%Front View
+	\filldraw[fill=white,very thick](0,0) -- (2,0) -- (2.62,1.90) -- (1.00,3.08) -- (-0.62,1.90) -- (0,0);
+	\draw [->,very thick] (3,3) -- (2.2,2.2);
+	\node at (3.2,3.2) {$\Gamma_L^{N_s}$};
+	%draw nodes
+	%	\node at (0,0) circle(2pt) {A};
+	\node[circle,draw=black, fill=black, inner sep=0pt,minimum size=3pt,label={$X_L$}] (a) at (1,1.35) {};
+	\node[circle,draw=black, fill=black, inner sep=0pt,minimum size=3pt] (b) at (-1,0.6) {};
+	\node[circle,draw=blue, fill=blue, inner sep=0pt,minimum size=3pt,label={\large {$\phi_I$}}] (c) at (3,0.6) {};
+	\draw[->,>=stealth] (c) -- (0.58,2.35);
+	\node[circle,draw=black, fill=black, inner sep=0pt,minimum size=3pt] (d) at (1,-0.8) {};
+	\node[circle,draw=black, fill=black, inner sep=0pt,minimum size=3pt] (e) at (-0.5,3.5) {};
+	\node[circle,draw=black, fill=black, inner sep=0pt,minimum size=3pt] (f) at (2.74,3.5) {};
+	\node (1a) at (0.4,2) {$\Omega_L$};
+	\draw [very thick] (0,0) -- (0,-0.5);
+	\draw [very thick] (2,0) -- (2,-0.5);
+	\draw [<->,very thick] (0,-0.5) -- node[above] {$l_L$} ++(2,0);
+	\draw[->,very thick] (-0.31,0.95) -- node[above] {$n_L^{n+1}$} ++(-0.95,-0.31);
+	\node (1a) at (-0.3,0.1) {$x_L^{n}$};
+	\node (1a) at (2.5,0.1) {$x_L^{n+1}$};
+	
+	\begin{scope}
+	\clip (-2,-2) rectangle (4,5);
+	\draw[draw=blue](3,0.6) circle(3);
+	\end{scope}
+	\end{tikzpicture}%
+	\vspace{0.25cm}
+	\caption{Voronoi Diagram} \label{fig:M1}  
+\end{figure}  
 
 
 
