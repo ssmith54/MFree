@@ -79,9 +79,40 @@ PrintNodesToImg
 \subsubsection*{Private functions}
 None so far
 
-
+\pagebreak
 \section{Shape functions}
+The shape function routines are contained within the $shapefunctions$ package. The fundamental data structure in this routine is the meshfree structure, which is a 'layer' of meshfree information implemented on-top of the physical domain
+
+\begin{tcolorbox}
+	\begin{lstlisting}
+	type Meshfree struct {	
+		domain *domain.Domain // reference to the underlying physical domain
+		nodalSpacing []float64 // distance to the closest node for each node 
+		gamma []float64 // support size multiplier for each node
+		isConstantSpacing bool// whether base domain sizes are the same
+		isVariousPoints bool // whether finding basis functions at multiple points
+		basisFunctionRadii []float64 // radius(support) of each basis function
+		dim int // does not need to be here
+		tol float64// tolerance for maxent convergence
+	}
+	\end{lstlisting}
+\end{tcolorbox}
+\noindent To construct a meshfree structure the following constructing function can be used:
+\begin{lstlisting}
+func NewMeshfree(domain *domain.Domain, isConstantSpacing bool, isVariousPoints bool, dim int, gamma []float64, tol float64)
+\end{lstlisting}
+if the support size parameter ($gamma []float64$) is left empty it can be set using the following functions:
+\begin{lstlisting}
+func (meshfree *Meshfree) SetConstantGamma(gamma float64)
+\end{lstlisting}
+if a constant gamma ( same support size parameter for each node)
+or 
+\begin{lstlisting}
+func (meshfree * Meshfree) setGamma(gamma []float64)
+\end{lstlisting}
+Note: the length of gamma should be equal to the number of nodes in the domain. 
 
 
+\subsubsection*{Private functions:}
 \section{Geometry}
 
